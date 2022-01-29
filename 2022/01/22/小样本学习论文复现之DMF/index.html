@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="一、小市值测量0.前言 非常naive的想法，选取市值最低的20只股票，每次交易先平仓，再按比例平均买入这些股票 两种写法： 123456789101112131415161718192021222324start &#x3D; &amp;#x27;2013-01-01&amp;#x27;                       # 回测起始时间end &#x3D; &amp;#x27;2014-01-01&amp;#x27;">
+  <meta name="description" content="一月二十二日1.看了工程代码框架，可以从以下几个模块去实现：  命令行参数获取与解析 数据集处理Datasets 数据加载器DataLoader 网络架构，网络按照论文分为Resnet提取特征、连接Support Image和Query Image做动态采样、用Dynamic Meta-filter提取与空间、通道相关的特征、用Neural ODE做特征匹配、定义损失函数训练Meta-Classi">
 <meta property="og:type" content="article">
-<meta property="og:title" content="量化策略模仿">
-<meta property="og:url" content="http://example.com/2022/01/22/%E9%87%8F%E5%8C%96%E7%AD%96%E7%95%A5%E6%A8%A1%E4%BB%BF/index.html">
+<meta property="og:title" content="小样本学习论文复现之DMF">
+<meta property="og:url" content="http://example.com/2022/01/22/%E5%B0%8F%E6%A0%B7%E6%9C%AC%E5%AD%A6%E4%B9%A0%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E4%B9%8BDMF/index.html">
 <meta property="og:site_name" content="starC">
-<meta property="og:description" content="一、小市值测量0.前言 非常naive的想法，选取市值最低的20只股票，每次交易先平仓，再按比例平均买入这些股票 两种写法： 123456789101112131415161718192021222324start &#x3D; &amp;#x27;2013-01-01&amp;#x27;                       # 回测起始时间end &#x3D; &amp;#x27;2014-01-01&amp;#x27;">
+<meta property="og:description" content="一月二十二日1.看了工程代码框架，可以从以下几个模块去实现：  命令行参数获取与解析 数据集处理Datasets 数据加载器DataLoader 网络架构，网络按照论文分为Resnet提取特征、连接Support Image和Query Image做动态采样、用Dynamic Meta-filter提取与空间、通道相关的特征、用Neural ODE做特征匹配、定义损失函数训练Meta-Classi">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-01-22T09:07:53.000Z">
-<meta property="article:modified_time" content="2022-01-22T09:17:39.129Z">
+<meta property="article:published_time" content="2022-01-22T12:04:24.000Z">
+<meta property="article:modified_time" content="2022-01-22T12:16:03.703Z">
 <meta property="article:author" content="chen cong">
-<meta property="article:tag" content="量化">
+<meta property="article:tag" content="论文复现">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2022/01/22/%E9%87%8F%E5%8C%96%E7%AD%96%E7%95%A5%E6%A8%A1%E4%BB%BF/">
+<link rel="canonical" href="http://example.com/2022/01/22/%E5%B0%8F%E6%A0%B7%E6%9C%AC%E5%AD%A6%E4%B9%A0%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E4%B9%8BDMF/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>量化策略模仿 | starC</title>
+  <title>小样本学习论文复现之DMF | starC</title>
   
 
 
@@ -167,7 +167,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/22/%E9%87%8F%E5%8C%96%E7%AD%96%E7%95%A5%E6%A8%A1%E4%BB%BF/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/22/%E5%B0%8F%E6%A0%B7%E6%9C%AC%E5%AD%A6%E4%B9%A0%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E4%B9%8BDMF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -180,7 +180,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          量化策略模仿
+          小样本学习论文复现之DMF
         </h1>
 
         <div class="post-meta">
@@ -191,7 +191,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-01-22 17:07:53 / 修改时间：17:17:39" itemprop="dateCreated datePublished" datetime="2022-01-22T17:07:53+08:00">2022-01-22</time>
+              <time title="创建时间：2022-01-22 20:04:24 / 修改时间：20:16:03" itemprop="dateCreated datePublished" datetime="2022-01-22T20:04:24+08:00">2022-01-22</time>
             </span>
 
           
@@ -205,13 +205,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="一、小市值测量"><a href="#一、小市值测量" class="headerlink" title="一、小市值测量"></a>一、小市值测量</h1><p>0.前言</p>
-<p>非常naive的想法，选取市值最低的20只股票，每次交易先平仓，再按比例平均买入这些股票</p>
-<p>两种写法：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">start = &#x27;2013-01-01&#x27;                       # 回测起始时间</span><br><span class="line">end = &#x27;2014-01-01&#x27;                         # 回测结束时间</span><br><span class="line">universe = DynamicUniverse(&#x27;A&#x27;).apply_filter(Factor.LCAP.nsmall(20))  </span><br><span class="line">										   # 证券池，支持股票、基金、期货、指数四种资产</span><br><span class="line">benchmark = &#x27;HS300&#x27;                        # 策略参考标准</span><br><span class="line">freq = &#x27;d&#x27;                                 # 策略类型，&#x27;d&#x27;表示日间策略使用日线回测，&#x27;m&#x27;表示日内策略使用分钟线回测</span><br><span class="line">refresh_rate = Monthly(1)                         # 调仓频率，表示执行handle_data的时间间隔，若freq = &#x27;d&#x27;时间间隔的单位为交易日，若freq = &#x27;m&#x27;时间间隔为分钟</span><br><span class="line">  </span><br><span class="line"># 配置账户信息，支持多资产多账户</span><br><span class="line">accounts = &#123;</span><br><span class="line">    &#x27;fantasy_account&#x27;: AccountConfig(account_type=&#x27;security&#x27;, capital_base=10000000)</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line">def initialize(context):</span><br><span class="line">    pass</span><br><span class="line">  </span><br><span class="line"># 每个单位时间(如果按天回测,则每天调用一次,如果按分钟,则每分钟调用一次)调用一次</span><br><span class="line">def handle_data(context):    </span><br><span class="line"></span><br><span class="line">    account = context.get_account(&#x27;fantasy_account&#x27;)</span><br><span class="line">    universe = context.get_universe(exclude_halt=False)</span><br><span class="line">    account.close_all_positions()</span><br><span class="line">    for stock in universe:</span><br><span class="line">        account.order_pct_to(stock,0.05)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">start = &#x27;2013-01-01&#x27;                       # 回测起始时间</span><br><span class="line">end = &#x27;2014-01-01&#x27;                         # 回测结束时间</span><br><span class="line">universe = DynamicUniverse(&#x27;A&#x27;)       		# 证券池，支持股票、基金、期货、指数四种资产</span><br><span class="line">benchmark = &#x27;HS300&#x27;                        # 策略参考标准</span><br><span class="line">freq = &#x27;d&#x27;                                 # 策略类型，&#x27;d&#x27;表示日间策略使用日线回测，&#x27;m&#x27;表示日内策略使用分钟线回测</span><br><span class="line">refresh_rate = Monthly(1)                         # 调仓频率，表示执行handle_data的时间间隔，若freq = &#x27;d&#x27;时间间隔的单位为交易日，若freq = &#x27;m&#x27;时间间隔为分钟</span><br><span class="line">  </span><br><span class="line"># 配置账户信息，支持多资产多账户</span><br><span class="line">accounts = &#123;</span><br><span class="line">    &#x27;fantasy_account&#x27;: AccountConfig(account_type=&#x27;security&#x27;, capital_base=10000000)</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line">def initialize(context):</span><br><span class="line">    pass</span><br><span class="line">  </span><br><span class="line"># 每个单位时间(如果按天回测,则每天调用一次,如果按分钟,则每分钟调用一次)调用一次</span><br><span class="line">def handle_data(context):    </span><br><span class="line">    account = context.get_account(&#x27;fantasy_account&#x27;)</span><br><span class="line">    universe = context.get_universe(exclude_halt=False)</span><br><span class="line">    </span><br><span class="line">    lcap_data = DataAPI.MktStockFactorsOneDayGet(context.previous_date,secID=universe,ticker=u&quot;&quot;,field=[&#x27;secID&#x27;,&#x27;LCAP&#x27;],pandas=&quot;1&quot;)</span><br><span class="line">    lcap_data.set_index(&#x27;secID&#x27;,inplace=True)</span><br><span class="line">    lcap_data.sort_values(by=&#x27;LCAP&#x27;,inplace=True)</span><br><span class="line">    </span><br><span class="line">    buy_list = lcap_data[:20].index</span><br><span class="line">    </span><br><span class="line">    account.close_all_positions()</span><br><span class="line">    for stock in buy_list:</span><br><span class="line">        account.order_pct_to(stock,0.05)</span><br></pre></td></tr></table></figure>
-
+        <h1 id="一月二十二日"><a href="#一月二十二日" class="headerlink" title="一月二十二日"></a>一月二十二日</h1><p>1.看了工程代码框架，可以从以下几个模块去实现：</p>
+<ul>
+<li>命令行参数获取与解析</li>
+<li>数据集处理Datasets</li>
+<li>数据加载器DataLoader</li>
+<li>网络架构，网络按照论文分为Resnet提取特征、连接Support Image和Query Image做动态采样、用Dynamic Meta-filter提取与空间、通道相关的特征、用Neural ODE做特征匹配、定义损失函数训练Meta-Classifier与global Classifier</li>
+</ul>
+<p>自己复现的话很多参数都可以固定下来</p>
+<p>2.学习了部分参数解析和DataLoader的语法</p>
+<p>3.构思工程</p>
+<p>如上有四个模块，功能集成在top.py中完成；需要为参数获取定义一个类，需要为Datasets与DataLoader定义两个类，需要搭建网络结构且由于小样本的特殊性，test与训练用的循环不能共用</p>
+<p>4.开写</p>
 
     </div>
 
@@ -221,7 +226,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E9%87%8F%E5%8C%96/" rel="tag"># 量化</a>
+              <a href="/tags/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0/" rel="tag"># 论文复现</a>
           </div>
 
         
@@ -230,12 +235,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/01/22/%E7%86%9F%E6%82%89Uquant%E5%B9%B3%E5%8F%B0/" rel="prev" title="熟悉Uquant平台">
-      <i class="fa fa-chevron-left"></i> 熟悉Uquant平台
+    <a href="/2022/01/22/%E9%87%8F%E5%8C%96%E7%AD%96%E7%95%A5%E6%A8%A1%E4%BB%BF/" rel="prev" title="量化策略模仿">
+      <i class="fa fa-chevron-left"></i> 量化策略模仿
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/01/22/%E5%B0%8F%E6%A0%B7%E6%9C%AC%E5%AD%A6%E4%B9%A0%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E4%B9%8BDMF/" rel="next" title="小样本学习论文复现之DMF">
-      小样本学习论文复现之DMF <i class="fa fa-chevron-right"></i>
+    <a href="/2022/01/28/Meta-learning%E5%AD%A6%E4%B9%A0/" rel="next" title="Meta-learning学习">
+      Meta-learning学习 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -295,7 +300,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%B0%8F%E5%B8%82%E5%80%BC%E6%B5%8B%E9%87%8F"><span class="nav-number">1.</span> <span class="nav-text">一、小市值测量</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E6%9C%88%E4%BA%8C%E5%8D%81%E4%BA%8C%E6%97%A5"><span class="nav-number">1.</span> <span class="nav-text">一月二十二日</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
