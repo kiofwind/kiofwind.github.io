@@ -228,7 +228,7 @@
 <ul>
 <li><p>Roughness，作者认为图像特征的空间位置的差异性(空间分辨率spaial resolution)比通道间的差异性大得多而很少有工作在提取特征是关注channel 相关特征。</p>
 <p>如下图，特征应该是黄色区域，channel1提现得很好而channel2较差。CAN做特征匹配时会赋予两个通道相同的权重，而DMF不会</p>
-<img src="../images/DMF-2.png" alt="DMF-2" style="zoom: 50%;" /></li>
+<img src="../images/DMF-2.png" alt="DMF-2" style="zoom: 50%;"></li>
 <li><p>Redundant matching. 冗余主要出现在两个地方，一个是待识别的物体可能在一张图像中多次出现；其次是当 aligning each query position时，会利用所有的support feature，效率较低(不是很懂,大受震撼)。</p>
 </li>
 <li><p>Inflexible alignment. The alignment strategy in these works only runs one time for all tasks. Thus, for those diffificult ones, the alignment may be insuffificient to appropriately embed the support knowledge into query feature.</p>

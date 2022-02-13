@@ -665,7 +665,7 @@
 <ul>
 <li><p>Roughness，作者认为图像特征的空间位置的差异性(空间分辨率spaial resolution)比通道间的差异性大得多而很少有工作在提取特征是关注channel 相关特征。</p>
 <p>如下图，特征应该是黄色区域，channel1提现得很好而channel2较差。CAN做特征匹配时会赋予两个通道相同的权重，而DMF不会</p>
-<img src="../images/DMF-2.png" alt="DMF-2" style="zoom: 50%;" /></li>
+<img src="../images/DMF-2.png" alt="DMF-2" style="zoom: 50%;"></li>
 <li><p>Redundant matching. 冗余主要出现在两个地方，一个是待识别的物体可能在一张图像中多次出现；其次是当 aligning each query position时，会利用所有的support feature，效率较低(不是很懂,大受震撼)。</p>
 </li>
 <li><p>Inflexible alignment. The alignment strategy in these works only runs one time for all tasks. Thus, for those diffificult ones, the alignment may be insuffificient to appropriately embed the support knowledge into query feature.</p>
@@ -768,7 +768,7 @@
 <p>​        Machine Learning的目的是寻找一个函数解决某个任务，通过一轮轮迭代更新模型参数以达到目的。常规步骤：定义一个含有未知参数的模型、定义模型的损失函数、根据损失函数使用优化器迭代模型。</p>
 <p>​        Meta Learning则是指learning about learning。目的是使机器具有学习的能力，通过在任务A、B、C上的学习，能迅速掌握解决任务D的方法。具体的，根据李宏毅老师的课程：我们相当于要学习到一种Learning algorithm，以分类任务为例，我们可以输入二分类任务，如分类苹果和香蕉、太阳和月亮的任务，通过训练掌握Learning algorithm后可以很快解决猫猫和狗狗的分类问题。也有三个步骤：先决定what is learnable?典型的learnable component有网络框架、初始化参数、学习率等；随后定义损失函数；第三步依旧是优化器优化learnable component。在训练过程中每轮迭代解决一个训练任务，任务具有训练数据与测试数据，在训练数据上训练，损失函数定义在训练任务的测试数据上以评估该任务上训练出模型的好坏。最终meta-learning会在测试任务上进行测试，根据表现判断learnable component是否被学到了。</p>
 <h1 id="二、一些术语"><a href="#二、一些术语" class="headerlink" title="二、一些术语"></a>二、一些术语</h1><p>​        每轮训练的输入是一个training tasks, training tasks的数据分为Support set和Query set，分别用于该任务的训练和测试。一次训练成为一个Episode。</p>
-<h1 id="三、损失函数"><a href="#三、损失函数" class="headerlink" title="三、损失函数"></a>三、损失函数</h1><img src="../images/Meta-learning-1.png" alt="1" style="zoom:67%;" />
+<h1 id="三、损失函数"><a href="#三、损失函数" class="headerlink" title="三、损失函数"></a>三、损失函数</h1><img src="../images/Meta-learning-1.png" alt="1" style="zoom:67%;">
 
 <p>采用批量数据训练，Machine Learning的Loss是累和一个batch中所有example的预测值与Label之间的误差；</p>
 <p>Meta Learning是一个Batch中所有task上面Loss的累和</p>
