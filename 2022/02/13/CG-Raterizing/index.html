@@ -20,22 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="一、与ML的比较​        可以从目标、步骤等方面进行比较。 ​        Machine Learning的目的是寻找一个函数解决某个任务，通过一轮轮迭代更新模型参数以达到目的。常规步骤：定义一个含有未知参数的模型、定义模型的损失函数、根据损失函数使用优化器迭代模型。 ​        Meta Learning则是指learning about learning。目的是使机器具有学习">
+  <meta name="description" content="如何判断一个点是否在三角形内部？ 做叉积，做三次叉积即可判断 反走样、可见性 光栅化后会产生锯齿？如何抗锯齿或反走样？ Aliasing，我们需要做反走样 Anti-Aliasing Jaggies空间、位置采样的问题 Moire Wagon wheel effect 本质是：信号变化太快以至于采样速度无法跟上 可以先模糊再光栅化 傅里叶级数与傅里叶变换 傅里叶级数用 图像频率与采样频率 滤波：滤">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Meta-learning学习">
-<meta property="og:url" content="http://example.com/2022/01/28/Meta-learning%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:title" content="CG_Raterizing">
+<meta property="og:url" content="http://example.com/2022/02/13/CG-Raterizing/index.html">
 <meta property="og:site_name" content="starC">
-<meta property="og:description" content="一、与ML的比较​        可以从目标、步骤等方面进行比较。 ​        Machine Learning的目的是寻找一个函数解决某个任务，通过一轮轮迭代更新模型参数以达到目的。常规步骤：定义一个含有未知参数的模型、定义模型的损失函数、根据损失函数使用优化器迭代模型。 ​        Meta Learning则是指learning about learning。目的是使机器具有学习">
+<meta property="og:description" content="如何判断一个点是否在三角形内部？ 做叉积，做三次叉积即可判断 反走样、可见性 光栅化后会产生锯齿？如何抗锯齿或反走样？ Aliasing，我们需要做反走样 Anti-Aliasing Jaggies空间、位置采样的问题 Moire Wagon wheel effect 本质是：信号变化太快以至于采样速度无法跟上 可以先模糊再光栅化 傅里叶级数与傅里叶变换 傅里叶级数用 图像频率与采样频率 滤波：滤">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/01/28/images/Meta-learning-1.png">
-<meta property="article:published_time" content="2022-01-28T03:31:00.000Z">
-<meta property="article:modified_time" content="2022-02-13T02:37:38.957Z">
+<meta property="article:published_time" content="2022-02-13T02:30:54.000Z">
+<meta property="article:modified_time" content="2022-02-13T02:31:15.619Z">
 <meta property="article:author" content="chen cong">
-<meta property="article:tag" content="meta-learning">
+<meta property="article:tag" content="CG">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/01/28/images/Meta-learning-1.png">
 
-<link rel="canonical" href="http://example.com/2022/01/28/Meta-learning%E5%AD%A6%E4%B9%A0/">
+<link rel="canonical" href="http://example.com/2022/02/13/CG-Raterizing/">
 
 
 <script id="page-configurations">
@@ -48,7 +46,7 @@
   };
 </script>
 
-  <title>Meta-learning学习 | starC</title>
+  <title>CG_Raterizing | starC</title>
   
 
 
@@ -169,7 +167,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/28/Meta-learning%E5%AD%A6%E4%B9%A0/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/CG-Raterizing/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -182,7 +180,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Meta-learning学习
+          CG_Raterizing
         </h1>
 
         <div class="post-meta">
@@ -191,16 +189,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-01-28 11:31:00" itemprop="dateCreated datePublished" datetime="2022-01-28T11:31:00+08:00">2022-01-28</time>
+              <time title="创建时间：2022-02-13 10:30:54 / 修改时间：10:31:15" itemprop="dateCreated datePublished" datetime="2022-02-13T10:30:54+08:00">2022-02-13</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-02-13 10:37:38" itemprop="dateModified" datetime="2022-02-13T10:37:38+08:00">2022-02-13</time>
-              </span>
 
           
 
@@ -213,18 +205,42 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="一、与ML的比较"><a href="#一、与ML的比较" class="headerlink" title="一、与ML的比较"></a>一、与ML的比较</h1><p>​        可以从目标、步骤等方面进行比较。</p>
-<p>​        Machine Learning的目的是寻找一个函数解决某个任务，通过一轮轮迭代更新模型参数以达到目的。常规步骤：定义一个含有未知参数的模型、定义模型的损失函数、根据损失函数使用优化器迭代模型。</p>
-<p>​        Meta Learning则是指learning about learning。目的是使机器具有学习的能力，通过在任务A、B、C上的学习，能迅速掌握解决任务D的方法。具体的，根据李宏毅老师的课程：我们相当于要学习到一种Learning algorithm，以分类任务为例，我们可以输入二分类任务，如分类苹果和香蕉、太阳和月亮的任务，通过训练掌握Learning algorithm后可以很快解决猫猫和狗狗的分类问题。也有三个步骤：先决定what is learnable?典型的learnable component有网络框架、初始化参数、学习率等；随后定义损失函数；第三步依旧是优化器优化learnable component。在训练过程中每轮迭代解决一个训练任务，任务具有训练数据与测试数据，在训练数据上训练，损失函数定义在训练任务的测试数据上以评估该任务上训练出模型的好坏。最终meta-learning会在测试任务上进行测试，根据表现判断learnable component是否被学到了。</p>
-<h1 id="二、一些术语"><a href="#二、一些术语" class="headerlink" title="二、一些术语"></a>二、一些术语</h1><p>​        每轮训练的输入是一个training tasks, training tasks的数据分为Support set和Query set，分别用于该任务的训练和测试。一次训练成为一个Episode。</p>
-<h1 id="三、损失函数"><a href="#三、损失函数" class="headerlink" title="三、损失函数"></a>三、损失函数</h1><img src="../images/Meta-learning-1.png" alt="1" style="zoom:67%;" />
-
-<p>采用批量数据训练，Machine Learning的Loss是累和一个batch中所有example的预测值与Label之间的误差；</p>
-<p>Meta Learning是一个Batch中所有task上面Loss的累和</p>
-<h1 id="四、Learnable-component"><a href="#四、Learnable-component" class="headerlink" title="四、Learnable component"></a>四、Learnable component</h1><h5 id="1-Learning-to-initialize"><a href="#1-Learning-to-initialize" class="headerlink" title="1.Learning to initialize"></a>1.Learning to initialize</h5><p>经典论文Model-Agnostic Meta-Learning(MAML)</p>
-<p>Reptile: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1803.02999">https://arxiv.org/abs/1803.02999</a></p>
-<p>How to train your MAML?</p>
-<h5 id="2-Optimizer"><a href="#2-Optimizer" class="headerlink" title="2.Optimizer"></a>2.Optimizer</h5><h5 id="3-Network-Architecture-Search-NAS"><a href="#3-Network-Architecture-Search-NAS" class="headerlink" title="3.Network Architecture Search(NAS)"></a>3.Network Architecture Search(NAS)</h5><p>……</p>
+        <p>如何判断一个点是否在三角形内部？</p>
+<p>做叉积，做三次叉积即可判断</p>
+<p>反走样、可见性</p>
+<p>光栅化后会产生锯齿？如何抗锯齿或反走样？</p>
+<p>Aliasing，我们需要做反走样 Anti-Aliasing</p>
+<p>Jaggies空间、位置采样的问题</p>
+<p>Moire</p>
+<p>Wagon wheel effect</p>
+<p>本质是：信号变化太快以至于采样速度无法跟上</p>
+<p>可以先模糊再光栅化</p>
+<p>傅里叶级数与傅里叶变换</p>
+<p>傅里叶级数用</p>
+<p>图像频率与采样频率</p>
+<p>滤波：滤掉特定频率的波</p>
+<p>傅里叶变换：时域–&gt;&gt;频率</p>
+<p>Filtering == Concolution == Averaging</p>
+<p>卷积定理</p>
+<p>时域上两个信号的卷积等价于频域上两个信号的乘积</p>
+<p>如何做卷积？</p>
+<ul>
+<li>在时域(spatial domain)上直接卷积</li>
+<li>傅里叶变换到频域(frequency domain),在频域上做乘积，再逆傅里叶变换转化会时域</li>
+</ul>
+<p>更大的卷积核对应更小的频域</p>
+<p>Sampling=Repeating Frequency Contents</p>
+<p>冲击函数时域到频域的转换–&gt;&gt;复制原始信号</p>
+<p>如果采样函数频率太低，冲击函数距离不远，信号混叠。</p>
+<p>Reduce Aliasing Error:</p>
+<p>1.提高采样频率</p>
+<p>2.先模糊再采样</p>
+<p>对原始信号先进行处理，减小信号宽度，再以原始的间隔去复制的时候，不再产生信号的混叠</p>
+<p>对每一个像素空间进行卷积求平均</p>
+<p>MSAA:</p>
+<p>Multi-sample anti-aliasing</p>
+<p>将大像素划分为小像素，判断小像素是否再三角形内部。根据小像素在三角形内的覆盖率得到像素值</p>
+<p>但是考虑到成本问题，工业界使用不规则的小像素分布，其中部分小像素还会被相邻区域复用</p>
 
     </div>
 
@@ -234,7 +250,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/meta-learning/" rel="tag"># meta-learning</a>
+              <a href="/tags/CG/" rel="tag"># CG</a>
           </div>
 
         
@@ -243,13 +259,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/01/22/%E5%B0%8F%E6%A0%B7%E6%9C%AC%E5%AD%A6%E4%B9%A0%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E4%B9%8BDMF/" rel="prev" title="小样本学习论文复现之DMF">
-      <i class="fa fa-chevron-left"></i> 小样本学习论文复现之DMF
+    <a href="/2022/02/13/CG-Shading/" rel="prev" title="CG_Shading">
+      <i class="fa fa-chevron-left"></i> CG_Shading
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/01/28/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/" rel="next" title="论文学习:DMF">
-      论文学习:DMF <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -308,7 +321,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%B8%8EML%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">1.</span> <span class="nav-text">一、与ML的比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%80%E4%BA%9B%E6%9C%AF%E8%AF%AD"><span class="nav-number">2.</span> <span class="nav-text">二、一些术语</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">三、损失函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81Learnable-component"><span class="nav-number">4.</span> <span class="nav-text">四、Learnable component</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Learning-to-initialize"><span class="nav-number">4.0.0.0.1.</span> <span class="nav-text">1.Learning to initialize</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Optimizer"><span class="nav-number">4.0.0.0.2.</span> <span class="nav-text">2.Optimizer</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-Network-Architecture-Search-NAS"><span class="nav-number">4.0.0.0.3.</span> <span class="nav-text">3.Network Architecture Search(NAS)</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

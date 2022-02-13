@@ -20,22 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="一、与ML的比较​        可以从目标、步骤等方面进行比较。 ​        Machine Learning的目的是寻找一个函数解决某个任务，通过一轮轮迭代更新模型参数以达到目的。常规步骤：定义一个含有未知参数的模型、定义模型的损失函数、根据损失函数使用优化器迭代模型。 ​        Meta Learning则是指learning about learning。目的是使机器具有学习">
+  <meta name="description" content="GeometryImplicit &amp; Explicity Geometry 是两种几何表述方法Implicit Geometry: Points satisfy specified reationship. x^2+y^2+Z^2&#x3D;1 对于判断点在不在面上较为简单，但举出所有在免上的点，绘制出几何形体比较难 Explicit Geometry:  直接给出点的坐标或参数映射的方式给出点的坐">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Meta-learning学习">
-<meta property="og:url" content="http://example.com/2022/01/28/Meta-learning%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:title" content="CG_Geometry">
+<meta property="og:url" content="http://example.com/2022/02/13/CG-Geometry/index.html">
 <meta property="og:site_name" content="starC">
-<meta property="og:description" content="一、与ML的比较​        可以从目标、步骤等方面进行比较。 ​        Machine Learning的目的是寻找一个函数解决某个任务，通过一轮轮迭代更新模型参数以达到目的。常规步骤：定义一个含有未知参数的模型、定义模型的损失函数、根据损失函数使用优化器迭代模型。 ​        Meta Learning则是指learning about learning。目的是使机器具有学习">
+<meta property="og:description" content="GeometryImplicit &amp; Explicity Geometry 是两种几何表述方法Implicit Geometry: Points satisfy specified reationship. x^2+y^2+Z^2&#x3D;1 对于判断点在不在面上较为简单，但举出所有在免上的点，绘制出几何形体比较难 Explicit Geometry:  直接给出点的坐标或参数映射的方式给出点的坐">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/01/28/images/Meta-learning-1.png">
-<meta property="article:published_time" content="2022-01-28T03:31:00.000Z">
-<meta property="article:modified_time" content="2022-02-13T02:37:38.957Z">
+<meta property="article:published_time" content="2022-02-13T02:26:49.000Z">
+<meta property="article:modified_time" content="2022-02-13T02:28:45.172Z">
 <meta property="article:author" content="chen cong">
-<meta property="article:tag" content="meta-learning">
+<meta property="article:tag" content="CG">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/01/28/images/Meta-learning-1.png">
 
-<link rel="canonical" href="http://example.com/2022/01/28/Meta-learning%E5%AD%A6%E4%B9%A0/">
+<link rel="canonical" href="http://example.com/2022/02/13/CG-Geometry/">
 
 
 <script id="page-configurations">
@@ -48,7 +46,7 @@
   };
 </script>
 
-  <title>Meta-learning学习 | starC</title>
+  <title>CG_Geometry | starC</title>
   
 
 
@@ -169,7 +167,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/28/Meta-learning%E5%AD%A6%E4%B9%A0/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/CG-Geometry/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -182,7 +180,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Meta-learning学习
+          CG_Geometry
         </h1>
 
         <div class="post-meta">
@@ -191,16 +189,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-01-28 11:31:00" itemprop="dateCreated datePublished" datetime="2022-01-28T11:31:00+08:00">2022-01-28</time>
+              <time title="创建时间：2022-02-13 10:26:49 / 修改时间：10:28:45" itemprop="dateCreated datePublished" datetime="2022-02-13T10:26:49+08:00">2022-02-13</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-02-13 10:37:38" itemprop="dateModified" datetime="2022-02-13T10:37:38+08:00">2022-02-13</time>
-              </span>
 
           
 
@@ -213,18 +205,49 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="一、与ML的比较"><a href="#一、与ML的比较" class="headerlink" title="一、与ML的比较"></a>一、与ML的比较</h1><p>​        可以从目标、步骤等方面进行比较。</p>
-<p>​        Machine Learning的目的是寻找一个函数解决某个任务，通过一轮轮迭代更新模型参数以达到目的。常规步骤：定义一个含有未知参数的模型、定义模型的损失函数、根据损失函数使用优化器迭代模型。</p>
-<p>​        Meta Learning则是指learning about learning。目的是使机器具有学习的能力，通过在任务A、B、C上的学习，能迅速掌握解决任务D的方法。具体的，根据李宏毅老师的课程：我们相当于要学习到一种Learning algorithm，以分类任务为例，我们可以输入二分类任务，如分类苹果和香蕉、太阳和月亮的任务，通过训练掌握Learning algorithm后可以很快解决猫猫和狗狗的分类问题。也有三个步骤：先决定what is learnable?典型的learnable component有网络框架、初始化参数、学习率等；随后定义损失函数；第三步依旧是优化器优化learnable component。在训练过程中每轮迭代解决一个训练任务，任务具有训练数据与测试数据，在训练数据上训练，损失函数定义在训练任务的测试数据上以评估该任务上训练出模型的好坏。最终meta-learning会在测试任务上进行测试，根据表现判断learnable component是否被学到了。</p>
-<h1 id="二、一些术语"><a href="#二、一些术语" class="headerlink" title="二、一些术语"></a>二、一些术语</h1><p>​        每轮训练的输入是一个training tasks, training tasks的数据分为Support set和Query set，分别用于该任务的训练和测试。一次训练成为一个Episode。</p>
-<h1 id="三、损失函数"><a href="#三、损失函数" class="headerlink" title="三、损失函数"></a>三、损失函数</h1><img src="../images/Meta-learning-1.png" alt="1" style="zoom:67%;" />
-
-<p>采用批量数据训练，Machine Learning的Loss是累和一个batch中所有example的预测值与Label之间的误差；</p>
-<p>Meta Learning是一个Batch中所有task上面Loss的累和</p>
-<h1 id="四、Learnable-component"><a href="#四、Learnable-component" class="headerlink" title="四、Learnable component"></a>四、Learnable component</h1><h5 id="1-Learning-to-initialize"><a href="#1-Learning-to-initialize" class="headerlink" title="1.Learning to initialize"></a>1.Learning to initialize</h5><p>经典论文Model-Agnostic Meta-Learning(MAML)</p>
-<p>Reptile: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1803.02999">https://arxiv.org/abs/1803.02999</a></p>
-<p>How to train your MAML?</p>
-<h5 id="2-Optimizer"><a href="#2-Optimizer" class="headerlink" title="2.Optimizer"></a>2.Optimizer</h5><h5 id="3-Network-Architecture-Search-NAS"><a href="#3-Network-Architecture-Search-NAS" class="headerlink" title="3.Network Architecture Search(NAS)"></a>3.Network Architecture Search(NAS)</h5><p>……</p>
+        <h1 id="Geometry"><a href="#Geometry" class="headerlink" title="Geometry"></a>Geometry</h1><p>Implicit &amp; Explicity Geometry</p>
+<p>是两种几何表述方法Implicit Geometry: Points satisfy specified reationship. x^2+y^2+Z^2=1</p>
+<p>对于判断点在不在面上较为简单，但举出所有在免上的点，绘制出几何形体比较难</p>
+<p>Explicit Geometry:  直接给出点的坐标或参数映射的方式给出点的坐标f: R<sup>2</sup>–&gt;&gt;R<sup>3</sup> ,(u,v)–&gt;&gt;(x,y,z)</p>
+<p>有点和缺点与Implicit Geometry相反</p>
+<p>Constructive Solid Geometry(Implicit)</p>
+<p>利用布尔运算合并implicit geometry,根据简单几何形成复杂几何</p>
+<p>Distance Functions(Implicit)</p>
+<p>根据距离函数而不是布尔运算进行blend</p>
+<p>Distance functions:定义一个点到目标物体上任意点的最小距离</p>
+<p>Point cloud(Explicit)</p>
+<p>Polygon Mesh(Explicit)</p>
+<h1 id="Curves"><a href="#Curves" class="headerlink" title="Curves"></a>Curves</h1><p>1.Bezier Curve</p>
+<p>de Casteljau Algorithm:生成贝塞尔曲线</p>
+<p>用数学语言表述：Bernstein polynomial作为系数对给定点进行加权</p>
+<p>仿射变换下只需要将给定点做仿射变换再生成贝塞尔曲线即可</p>
+<p>贝塞尔曲线在控制点的凸包内</p>
+<p>Piecewaise Bezier Curves,如何将贝塞尔曲线连续？</p>
+<p>C<sup>0</sup>连续，端点相连</p>
+<p>C<sup>1</sup>连续，端点相连，导数相同</p>
+<p>2.B-splines</p>
+<ul>
+<li>short for base splines</li>
+</ul>
+<p>3.Bezier Surface</p>
+<p>4 X 4 = 16个点</p>
+<p>水平方向每四个点获取四条曲线，竖直方向根据曲线上四个点再拟合贝塞尔曲线</p>
+<p>4.subdivision</p>
+<p>细分图形，不仅是增加三角形的数目，还需要使物体看上去更圆滑</p>
+<p>Loop subdivision:对不同的顶点应用不同的变换</p>
+<p>new point = 1/8X(old points in the line) + 3/8 X (old points vertical perpendicular to the line)</p>
+<p>old point = (1- n X u) X orginal_position + u*neighbor_position_sum</p>
+<p>Catmull-Clark Subdivision(General Mesh)</p>
+<p>物体可能不是用三角形描述的</p>
+<p>首先定义quad face与Non-quad face，还有Extraordinary vertex(奇异点，度不为4)</p>
+<p>取每条边的中点，取每个面的中点</p>
+<p>第一次细分之后增加了非四边形面个奇异点个数，之后不会再增加奇异点个数</p>
+<p>如何调整：将点分为三类：在平面中心的点、边中心的点、原始的顶点</p>
+<p>Mesh Simplification</p>
+<p>Goal:reduce number of mesh elements while maintaining the overall shape</p>
+<p>做法：Collapsing An Edge(边坍缩)，将一条边的两个顶点变成一个点</p>
+<p>但是哪些边需要进行坍缩？使用Quadric Error Metrics(二次误差度量)，将某个点放在某个位置上使其到其原本连接各个面的距离最小。</p>
+<p>如何选边？先为每个边用二次误差度量打个分，每次选最小的边，更新受影响的边(建议使用堆结构)</p>
 
     </div>
 
@@ -234,7 +257,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/meta-learning/" rel="tag"># meta-learning</a>
+              <a href="/tags/CG/" rel="tag"># CG</a>
           </div>
 
         
@@ -243,12 +266,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/01/22/%E5%B0%8F%E6%A0%B7%E6%9C%AC%E5%AD%A6%E4%B9%A0%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E4%B9%8BDMF/" rel="prev" title="小样本学习论文复现之DMF">
-      <i class="fa fa-chevron-left"></i> 小样本学习论文复现之DMF
+    <a href="/2022/01/28/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/" rel="prev" title="论文学习:DMF">
+      <i class="fa fa-chevron-left"></i> 论文学习:DMF
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/01/28/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/" rel="next" title="论文学习:DMF">
-      论文学习:DMF <i class="fa fa-chevron-right"></i>
+    <a href="/2022/02/13/CG-Ray-tracing/" rel="next" title="CG_Ray_tracing">
+      CG_Ray_tracing <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -308,7 +331,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%B8%8EML%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">1.</span> <span class="nav-text">一、与ML的比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%80%E4%BA%9B%E6%9C%AF%E8%AF%AD"><span class="nav-number">2.</span> <span class="nav-text">二、一些术语</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">三、损失函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81Learnable-component"><span class="nav-number">4.</span> <span class="nav-text">四、Learnable component</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Learning-to-initialize"><span class="nav-number">4.0.0.0.1.</span> <span class="nav-text">1.Learning to initialize</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Optimizer"><span class="nav-number">4.0.0.0.2.</span> <span class="nav-text">2.Optimizer</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-Network-Architecture-Search-NAS"><span class="nav-number">4.0.0.0.3.</span> <span class="nav-text">3.Network Architecture Search(NAS)</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Geometry"><span class="nav-number">1.</span> <span class="nav-text">Geometry</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Curves"><span class="nav-number">2.</span> <span class="nav-text">Curves</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
