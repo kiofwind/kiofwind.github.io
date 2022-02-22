@@ -20,20 +20,30 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="GeometryImplicit &amp; Explicity Geometry 是两种几何表述方法Implicit Geometry: Points satisfy specified reationship. x^2+y^2+Z^2&#x3D;1 对于判断点在不在面上较为简单，但举出所有在免上的点，绘制出几何形体比较难 Explicit Geometry:  直接给出点的坐标或参数映射的方式给出点的坐">
+  <meta name="description" content="一、Vector Set as Input​        与以前遇到的问题不同，输入的是一个向量的集合。向量的数目不确定。 ​        典型应用：NLP中语句作为输入，每个单词是一个vector，可以用one-hot编码编成向量，也可以用word-embedding包含语义信息；语音输入，以frame为单位，一定步长移动；Social-network，可以将每个节点作为一个vector；高">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CG_Geometry">
-<meta property="og:url" content="http://example.com/2022/02/13/CG-Geometry/index.html">
+<meta property="og:title" content="Self-attention">
+<meta property="og:url" content="http://example.com/2022/02/21/Self-attention/index.html">
 <meta property="og:site_name" content="starC">
-<meta property="og:description" content="GeometryImplicit &amp; Explicity Geometry 是两种几何表述方法Implicit Geometry: Points satisfy specified reationship. x^2+y^2+Z^2&#x3D;1 对于判断点在不在面上较为简单，但举出所有在免上的点，绘制出几何形体比较难 Explicit Geometry:  直接给出点的坐标或参数映射的方式给出点的坐">
+<meta property="og:description" content="一、Vector Set as Input​        与以前遇到的问题不同，输入的是一个向量的集合。向量的数目不确定。 ​        典型应用：NLP中语句作为输入，每个单词是一个vector，可以用one-hot编码编成向量，也可以用word-embedding包含语义信息；语音输入，以frame为单位，一定步长移动；Social-network，可以将每个节点作为一个vector；高">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-02-13T02:26:49.000Z">
-<meta property="article:modified_time" content="2022-02-13T02:28:45.172Z">
+<meta property="og:image" content="http://example.com/2022/02/21/Self-attention/1.png">
+<meta property="og:image" content="http://example.com/2022/02/21/Self-attention/2.png">
+<meta property="og:image" content="http://example.com/2022/02/21/Self-attention/3.png">
+<meta property="og:image" content="http://example.com/2022/02/21/Self-attention/4.png">
+<meta property="og:image" content="http://example.com/2022/02/21/Self-attention/5.png">
+<meta property="og:image" content="http://example.com/2022/02/21/Self-attention/6.png">
+<meta property="og:image" content="http://example.com/2022/02/21/Self-attention/7.png">
+<meta property="og:image" content="http://example.com/2022/02/21/Self-attention/8.png">
+<meta property="og:image" content="http://example.com/2022/02/21/Self-attention/9.png">
+<meta property="article:published_time" content="2022-02-21T02:06:16.000Z">
+<meta property="article:modified_time" content="2022-02-21T03:14:23.489Z">
 <meta property="article:author" content="chen cong">
-<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Machine-learning">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/02/21/Self-attention/1.png">
 
-<link rel="canonical" href="http://example.com/2022/02/13/CG-Geometry/">
+<link rel="canonical" href="http://example.com/2022/02/21/Self-attention/">
 
 
 <script id="page-configurations">
@@ -46,7 +56,7 @@
   };
 </script>
 
-  <title>CG_Geometry | starC</title>
+  <title>Self-attention | starC</title>
   
 
 
@@ -157,7 +167,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/CG-Geometry/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/21/Self-attention/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -170,7 +180,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          CG_Geometry
+          Self-attention
         </h1>
 
         <div class="post-meta">
@@ -181,7 +191,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-02-13 10:26:49 / 修改时间：10:28:45" itemprop="dateCreated datePublished" datetime="2022-02-13T10:26:49+08:00">2022-02-13</time>
+              <time title="创建时间：2022-02-21 10:06:16 / 修改时间：11:14:23" itemprop="dateCreated datePublished" datetime="2022-02-21T10:06:16+08:00">2022-02-21</time>
             </span>
 
           
@@ -195,49 +205,49 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Geometry"><a href="#Geometry" class="headerlink" title="Geometry"></a>Geometry</h1><p>Implicit &amp; Explicity Geometry</p>
-<p>是两种几何表述方法Implicit Geometry: Points satisfy specified reationship. x^2+y^2+Z^2=1</p>
-<p>对于判断点在不在面上较为简单，但举出所有在免上的点，绘制出几何形体比较难</p>
-<p>Explicit Geometry:  直接给出点的坐标或参数映射的方式给出点的坐标f: R<sup>2</sup>–&gt;&gt;R<sup>3</sup> ,(u,v)–&gt;&gt;(x,y,z)</p>
-<p>有点和缺点与Implicit Geometry相反</p>
-<p>Constructive Solid Geometry(Implicit)</p>
-<p>利用布尔运算合并implicit geometry,根据简单几何形成复杂几何</p>
-<p>Distance Functions(Implicit)</p>
-<p>根据距离函数而不是布尔运算进行blend</p>
-<p>Distance functions:定义一个点到目标物体上任意点的最小距离</p>
-<p>Point cloud(Explicit)</p>
-<p>Polygon Mesh(Explicit)</p>
-<h1 id="Curves"><a href="#Curves" class="headerlink" title="Curves"></a>Curves</h1><p>1.Bezier Curve</p>
-<p>de Casteljau Algorithm:生成贝塞尔曲线</p>
-<p>用数学语言表述：Bernstein polynomial作为系数对给定点进行加权</p>
-<p>仿射变换下只需要将给定点做仿射变换再生成贝塞尔曲线即可</p>
-<p>贝塞尔曲线在控制点的凸包内</p>
-<p>Piecewaise Bezier Curves,如何将贝塞尔曲线连续？</p>
-<p>C<sup>0</sup>连续，端点相连</p>
-<p>C<sup>1</sup>连续，端点相连，导数相同</p>
-<p>2.B-splines</p>
+        <h1 id="一、Vector-Set-as-Input"><a href="#一、Vector-Set-as-Input" class="headerlink" title="一、Vector Set as Input"></a>一、Vector Set as Input</h1><p>​        与以前遇到的问题不同，输入的是一个向量的集合。向量的数目不确定。</p>
+<p>​        典型应用：NLP中语句作为输入，每个单词是一个vector，可以用one-hot编码编成向量，也可以用word-embedding包含语义信息；语音输入，以frame为单位，一定步长移动；Social-network，可以将每个节点作为一个vector；高分子结构，同样可以视为一种graph。</p>
+<h1 id="二、The-output"><a href="#二、The-output" class="headerlink" title="二、The output"></a>二、The output</h1><p>1.each vector has a label</p>
+<p>例子：</p>
 <ul>
-<li>short for base splines</li>
+<li>词性标注 I saw a saw.  –&gt;&gt; N V DET N</li>
+<li>social networrk每个节点的特性</li>
 </ul>
-<p>3.Bezier Surface</p>
-<p>4 X 4 = 16个点</p>
-<p>水平方向每四个点获取四条曲线，竖直方向根据曲线上四个点再拟合贝塞尔曲线</p>
-<p>4.subdivision</p>
-<p>细分图形，不仅是增加三角形的数目，还需要使物体看上去更圆滑</p>
-<p>Loop subdivision:对不同的顶点应用不同的变换</p>
-<p>new point = 1/8X(old points in the line) + 3/8 X (old points vertical perpendicular to the line)</p>
-<p>old point = (1- n X u) X orginal_position + u*neighbor_position_sum</p>
-<p>Catmull-Clark Subdivision(General Mesh)</p>
-<p>物体可能不是用三角形描述的</p>
-<p>首先定义quad face与Non-quad face，还有Extraordinary vertex(奇异点，度不为4)</p>
-<p>取每条边的中点，取每个面的中点</p>
-<p>第一次细分之后增加了非四边形面个奇异点个数，之后不会再增加奇异点个数</p>
-<p>如何调整：将点分为三类：在平面中心的点、边中心的点、原始的顶点</p>
-<p>Mesh Simplification</p>
-<p>Goal:reduce number of mesh elements while maintaining the overall shape</p>
-<p>做法：Collapsing An Edge(边坍缩)，将一条边的两个顶点变成一个点</p>
-<p>但是哪些边需要进行坍缩？使用Quadric Error Metrics(二次误差度量)，将某个点放在某个位置上使其到其原本连接各个面的距离最小。</p>
-<p>如何选边？先为每个边用二次误差度量打个分，每次选最小的边，更新受影响的边(建议使用堆结构)</p>
+<p>2.the whole sequence has a label</p>
+<p>例子:</p>
+<ul>
+<li>sentiment analysis</li>
+<li>预测高分子的性质</li>
+</ul>
+<p>3.Model decides the number of labels tself</p>
+<p>例子:</p>
+<ul>
+<li>翻译</li>
+<li>语音辨识</li>
+</ul>
+<h1 id="三、Type-one"><a href="#三、Type-one" class="headerlink" title="三、Type one"></a>三、Type one</h1><p>sequence label问题</p>
+<p>1.self-attention作为解决方法</p>
+<p><img src="/2022/02/21/Self-attention/1.png" alt="1"></p>
+<p>不是考虑一个frame或windows，而是考虑整个sequence作为输入</p>
+<p>同时self-attention可以多次使用且可以与fully-conntected network交替使用</p>
+<p><img src="/2022/02/21/Self-attention/2.png" alt="2"></p>
+<p>2.self-attention做法</p>
+<p>计算一对vector之间的关联程度</p>
+<p><img src="/2022/02/21/Self-attention/3.png" alt="3"></p>
+<p>计算sequence中vector的关联程度</p>
+<p><img src="/2022/02/21/Self-attention/4.png" alt="4"></p>
+<p>最终输出一个vector</p>
+<p><img src="/2022/02/21/Self-attention/5.png" alt="5"></p>
+<p>简化运算形式：</p>
+<p><img src="/2022/02/21/Self-attention/6.png" alt="6"></p>
+<p><img src="/2022/02/21/Self-attention/7.png" alt="7"></p>
+<p><img src="/2022/02/21/Self-attention/8.png" alt="8"></p>
+<p>3.multi-head attention</p>
+<p>发掘不同的self-attention</p>
+<p><img src="/2022/02/21/Self-attention/9.png" alt="9"></p>
+<p>4.Positional Encoding</p>
+<p>上述计算中并没有考虑位置信息，计算过程对称。</p>
+<p>但如果认为位置信息比较重要则可以加进去，做法可以对每一个位置生成一个unique vector，与原来的输入相加即可。</p>
 
     </div>
 
@@ -247,7 +257,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Machine-learning/" rel="tag"># Machine-learning</a>
           </div>
 
         
@@ -256,13 +266,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/01/22/%E9%87%8F%E5%8C%96%E7%AD%96%E7%95%A5%E6%A8%A1%E4%BB%BF/" rel="prev" title="量化策略模仿">
-      <i class="fa fa-chevron-left"></i> 量化策略模仿
+    <a href="/2022/02/13/%E5%B0%8F%E6%A0%B7%E6%9C%AC%E5%AD%A6%E4%B9%A0%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E4%B9%8BDMF/" rel="prev" title="小样本学习论文复现之DMF">
+      <i class="fa fa-chevron-left"></i> 小样本学习论文复现之DMF
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/02/13/CG-Ray-tracing/" rel="next" title="CG_Ray_tracing">
-      CG_Ray_tracing <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -321,7 +328,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Geometry"><span class="nav-number">1.</span> <span class="nav-text">Geometry</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Curves"><span class="nav-number">2.</span> <span class="nav-text">Curves</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81Vector-Set-as-Input"><span class="nav-number">1.</span> <span class="nav-text">一、Vector Set as Input</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81The-output"><span class="nav-number">2.</span> <span class="nav-text">二、The output</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81Type-one"><span class="nav-number">3.</span> <span class="nav-text">三、Type one</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

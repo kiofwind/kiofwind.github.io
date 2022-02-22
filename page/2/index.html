@@ -20,33 +20,30 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="一、前言本篇博文用于记录学习他人论文复现代码中一些库的使用以及深度学习框架pytorch的一些语法。 二、有用的库1.setuptools打包工具是python标准的打包分发工具，可以将编写的python项目打包安装，使其它人可以像调用标准库或python第三方库一样直接使用。 setup.py定义打包程序的一些信息 1234567891011setup(    name&#x3D;&quot;dconv&amp;">
-<meta property="og:type" content="article">
-<meta property="og:title" content="代码学习">
-<meta property="og:url" content="http://example.com/2022/01/22/%E4%BB%A3%E7%A0%81%E5%AD%A6%E4%B9%A0/index.html">
+  <meta name="description" content="personal blog of cc">
+<meta property="og:type" content="website">
+<meta property="og:title" content="starC">
+<meta property="og:url" content="http://example.com/page/2/index.html">
 <meta property="og:site_name" content="starC">
-<meta property="og:description" content="一、前言本篇博文用于记录学习他人论文复现代码中一些库的使用以及深度学习框架pytorch的一些语法。 二、有用的库1.setuptools打包工具是python标准的打包分发工具，可以将编写的python项目打包安装，使其它人可以像调用标准库或python第三方库一样直接使用。 setup.py定义打包程序的一些信息 1234567891011setup(    name&#x3D;&quot;dconv&amp;">
+<meta property="og:description" content="personal blog of cc">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-01-22T00:20:07.000Z">
-<meta property="article:modified_time" content="2022-01-28T03:10:45.611Z">
 <meta property="article:author" content="chen cong">
-<meta property="article:tag" content="技术">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2022/01/22/%E4%BB%A3%E7%A0%81%E5%AD%A6%E4%B9%A0/">
+<link rel="canonical" href="http://example.com/page/2/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : false,
-    isPost : true,
+    isHome : true,
+    isPost : false,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>代码学习 | starC</title>
+  <title>starC</title>
   
 
 
@@ -150,10 +147,9 @@
         <div class="content-wrap">
           
 
-          <div class="content post posts-expand">
+          <div class="content index posts-expand">
             
-
-    
+      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -169,9 +165,10 @@
       <meta itemprop="name" content="starC">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          代码学习
-        </h1>
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/22/%E4%BB%A3%E7%A0%81%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">代码学习</a>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -201,7 +198,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>本篇博文用于记录学习他人论文复现代码中一些库的使用以及深度学习框架pytorch的一些语法。</p>
+          <h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>本篇博文用于记录学习他人论文复现代码中一些库的使用以及深度学习框架pytorch的一些语法。</p>
 <h1 id="二、有用的库"><a href="#二、有用的库" class="headerlink" title="二、有用的库"></a>二、有用的库</h1><h3 id="1-setuptools打包工具"><a href="#1-setuptools打包工具" class="headerlink" title="1.setuptools打包工具"></a>1.setuptools打包工具</h3><p>是python标准的打包分发工具，可以将编写的python项目打包安装，使其它人可以像调用标准库或python第三方库一样直接使用。</p>
 <p>setup.py定义打包程序的一些信息</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">setup(</span><br><span class="line">    name=<span class="string">&quot;dconv&quot;</span>,	<span class="comment">#应用名</span></span><br><span class="line">    version=<span class="string">&quot;0.1&quot;</span>,	<span class="comment">#版本号</span></span><br><span class="line">    author=<span class="string">&quot;fmassa&quot;</span>,	<span class="comment">#作者</span></span><br><span class="line">    url=<span class="string">&quot;https://github.com/facebookresearch/maskrcnn-benchmark&quot;</span>,	<span class="comment">#程序的官网地址</span></span><br><span class="line">    description=<span class="string">&quot;object detection in pytorch&quot;</span>,</span><br><span class="line">    packages=find_packages(exclude=(<span class="string">&quot;configs&quot;</span>, <span class="string">&quot;tests&quot;</span>,)),	<span class="comment">#需要处理的包目录</span></span><br><span class="line">    <span class="comment"># install_requires=requirements,</span></span><br><span class="line">    ext_modules=get_extensions(),</span><br><span class="line">    cmdclass=&#123;<span class="string">&quot;build_ext&quot;</span>: torch.utils.cpp_extension.BuildExtension&#125;,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
@@ -250,34 +247,25 @@
 <p>较为复杂，现在不是很熟。不太写得出来，放个别人的链接</p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u014380165/article/details/79058479?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-2.pc_relevant_default&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-2.pc_relevant_default&utm_relevant_index=5">(40条消息) PyTorch源码解读之torch.utils.data.DataLoader_AI之路-CSDN博客_torch.utils.data</a></p>
 
+      
     </div>
 
     
     
     
-
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item"></div>
-      <div class="post-nav-item">
-    <a href="/2022/01/22/%E7%86%9F%E6%82%89Uquant%E5%B9%B3%E5%8F%B0/" rel="next" title="熟悉Uquant平台">
-      熟悉Uquant平台 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
+        <div class="post-eof"></div>
       </footer>
-    
   </article>
   
   
   
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
 
 
 
@@ -329,7 +317,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">一、前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%9C%89%E7%94%A8%E7%9A%84%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">二、有用的库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-setuptools%E6%89%93%E5%8C%85%E5%B7%A5%E5%85%B7"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.setuptools打包工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-argparse-ArgumentParser-%E7%94%A8%E6%B3%95"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.argparse.ArgumentParser()用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-os%E6%A8%A1%E5%9D%97%E7%9A%84%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8"><span class="nav-number">2.0.3.</span> <span class="nav-text">3.os模块的常见使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81pytorch%E8%AF%AD%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">三、pytorch语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%9A%8F%E6%9C%BA%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A7%8D%E5%AD%90"><span class="nav-number">3.0.1.</span> <span class="nav-text">1.随机初始化种子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Dataset%E5%92%8CDataLoader"><span class="nav-number">3.0.2.</span> <span class="nav-text">2.Dataset和DataLoader</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
