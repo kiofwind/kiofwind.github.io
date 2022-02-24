@@ -118,12 +118,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">11</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">14</span></a>
 
   </li>
   </ul>
@@ -149,6 +149,296 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/CG-Geometry/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/13/CG-Geometry/" class="post-title-link" itemprop="url">CG_Geometry</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-13 10:26:49 / 修改时间：10:28:45" itemprop="dateCreated datePublished" datetime="2022-02-13T10:26:49+08:00">2022-02-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Geometry"><a href="#Geometry" class="headerlink" title="Geometry"></a>Geometry</h1><p>Implicit &amp; Explicity Geometry</p>
+<p>是两种几何表述方法Implicit Geometry: Points satisfy specified reationship. x^2+y^2+Z^2=1</p>
+<p>对于判断点在不在面上较为简单，但举出所有在免上的点，绘制出几何形体比较难</p>
+<p>Explicit Geometry:  直接给出点的坐标或参数映射的方式给出点的坐标f: R<sup>2</sup>–&gt;&gt;R<sup>3</sup> ,(u,v)–&gt;&gt;(x,y,z)</p>
+<p>有点和缺点与Implicit Geometry相反</p>
+<p>Constructive Solid Geometry(Implicit)</p>
+<p>利用布尔运算合并implicit geometry,根据简单几何形成复杂几何</p>
+<p>Distance Functions(Implicit)</p>
+<p>根据距离函数而不是布尔运算进行blend</p>
+<p>Distance functions:定义一个点到目标物体上任意点的最小距离</p>
+<p>Point cloud(Explicit)</p>
+<p>Polygon Mesh(Explicit)</p>
+<h1 id="Curves"><a href="#Curves" class="headerlink" title="Curves"></a>Curves</h1><p>1.Bezier Curve</p>
+<p>de Casteljau Algorithm:生成贝塞尔曲线</p>
+<p>用数学语言表述：Bernstein polynomial作为系数对给定点进行加权</p>
+<p>仿射变换下只需要将给定点做仿射变换再生成贝塞尔曲线即可</p>
+<p>贝塞尔曲线在控制点的凸包内</p>
+<p>Piecewaise Bezier Curves,如何将贝塞尔曲线连续？</p>
+<p>C<sup>0</sup>连续，端点相连</p>
+<p>C<sup>1</sup>连续，端点相连，导数相同</p>
+<p>2.B-splines</p>
+<ul>
+<li>short for base splines</li>
+</ul>
+<p>3.Bezier Surface</p>
+<p>4 X 4 = 16个点</p>
+<p>水平方向每四个点获取四条曲线，竖直方向根据曲线上四个点再拟合贝塞尔曲线</p>
+<p>4.subdivision</p>
+<p>细分图形，不仅是增加三角形的数目，还需要使物体看上去更圆滑</p>
+<p>Loop subdivision:对不同的顶点应用不同的变换</p>
+<p>new point = 1/8X(old points in the line) + 3/8 X (old points vertical perpendicular to the line)</p>
+<p>old point = (1- n X u) X orginal_position + u*neighbor_position_sum</p>
+<p>Catmull-Clark Subdivision(General Mesh)</p>
+<p>物体可能不是用三角形描述的</p>
+<p>首先定义quad face与Non-quad face，还有Extraordinary vertex(奇异点，度不为4)</p>
+<p>取每条边的中点，取每个面的中点</p>
+<p>第一次细分之后增加了非四边形面个奇异点个数，之后不会再增加奇异点个数</p>
+<p>如何调整：将点分为三类：在平面中心的点、边中心的点、原始的顶点</p>
+<p>Mesh Simplification</p>
+<p>Goal:reduce number of mesh elements while maintaining the overall shape</p>
+<p>做法：Collapsing An Edge(边坍缩)，将一条边的两个顶点变成一个点</p>
+<p>但是哪些边需要进行坍缩？使用Quadric Error Metrics(二次误差度量)，将某个点放在某个位置上使其到其原本连接各个面的距离最小。</p>
+<p>如何选边？先为每个边用二次误差度量打个分，每次选最小的边，更新受影响的边(建议使用堆结构)</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/22/%E9%87%8F%E5%8C%96%E7%AD%96%E7%95%A5%E6%A8%A1%E4%BB%BF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/22/%E9%87%8F%E5%8C%96%E7%AD%96%E7%95%A5%E6%A8%A1%E4%BB%BF/" class="post-title-link" itemprop="url">量化策略模仿</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-22 17:07:53 / 修改时间：17:17:39" itemprop="dateCreated datePublished" datetime="2022-01-22T17:07:53+08:00">2022-01-22</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一、小市值测量"><a href="#一、小市值测量" class="headerlink" title="一、小市值测量"></a>一、小市值测量</h1><p>0.前言</p>
+<p>非常naive的想法，选取市值最低的20只股票，每次交易先平仓，再按比例平均买入这些股票</p>
+<p>两种写法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">start = &#x27;2013-01-01&#x27;                       # 回测起始时间</span><br><span class="line">end = &#x27;2014-01-01&#x27;                         # 回测结束时间</span><br><span class="line">universe = DynamicUniverse(&#x27;A&#x27;).apply_filter(Factor.LCAP.nsmall(20))  </span><br><span class="line">										   # 证券池，支持股票、基金、期货、指数四种资产</span><br><span class="line">benchmark = &#x27;HS300&#x27;                        # 策略参考标准</span><br><span class="line">freq = &#x27;d&#x27;                                 # 策略类型，&#x27;d&#x27;表示日间策略使用日线回测，&#x27;m&#x27;表示日内策略使用分钟线回测</span><br><span class="line">refresh_rate = Monthly(1)                         # 调仓频率，表示执行handle_data的时间间隔，若freq = &#x27;d&#x27;时间间隔的单位为交易日，若freq = &#x27;m&#x27;时间间隔为分钟</span><br><span class="line">  </span><br><span class="line"># 配置账户信息，支持多资产多账户</span><br><span class="line">accounts = &#123;</span><br><span class="line">    &#x27;fantasy_account&#x27;: AccountConfig(account_type=&#x27;security&#x27;, capital_base=10000000)</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line">def initialize(context):</span><br><span class="line">    pass</span><br><span class="line">  </span><br><span class="line"># 每个单位时间(如果按天回测,则每天调用一次,如果按分钟,则每分钟调用一次)调用一次</span><br><span class="line">def handle_data(context):    </span><br><span class="line"></span><br><span class="line">    account = context.get_account(&#x27;fantasy_account&#x27;)</span><br><span class="line">    universe = context.get_universe(exclude_halt=False)</span><br><span class="line">    account.close_all_positions()</span><br><span class="line">    for stock in universe:</span><br><span class="line">        account.order_pct_to(stock,0.05)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">start = &#x27;2013-01-01&#x27;                       # 回测起始时间</span><br><span class="line">end = &#x27;2014-01-01&#x27;                         # 回测结束时间</span><br><span class="line">universe = DynamicUniverse(&#x27;A&#x27;)       		# 证券池，支持股票、基金、期货、指数四种资产</span><br><span class="line">benchmark = &#x27;HS300&#x27;                        # 策略参考标准</span><br><span class="line">freq = &#x27;d&#x27;                                 # 策略类型，&#x27;d&#x27;表示日间策略使用日线回测，&#x27;m&#x27;表示日内策略使用分钟线回测</span><br><span class="line">refresh_rate = Monthly(1)                         # 调仓频率，表示执行handle_data的时间间隔，若freq = &#x27;d&#x27;时间间隔的单位为交易日，若freq = &#x27;m&#x27;时间间隔为分钟</span><br><span class="line">  </span><br><span class="line"># 配置账户信息，支持多资产多账户</span><br><span class="line">accounts = &#123;</span><br><span class="line">    &#x27;fantasy_account&#x27;: AccountConfig(account_type=&#x27;security&#x27;, capital_base=10000000)</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line">def initialize(context):</span><br><span class="line">    pass</span><br><span class="line">  </span><br><span class="line"># 每个单位时间(如果按天回测,则每天调用一次,如果按分钟,则每分钟调用一次)调用一次</span><br><span class="line">def handle_data(context):    </span><br><span class="line">    account = context.get_account(&#x27;fantasy_account&#x27;)</span><br><span class="line">    universe = context.get_universe(exclude_halt=False)</span><br><span class="line">    </span><br><span class="line">    lcap_data = DataAPI.MktStockFactorsOneDayGet(context.previous_date,secID=universe,ticker=u&quot;&quot;,field=[&#x27;secID&#x27;,&#x27;LCAP&#x27;],pandas=&quot;1&quot;)</span><br><span class="line">    lcap_data.set_index(&#x27;secID&#x27;,inplace=True)</span><br><span class="line">    lcap_data.sort_values(by=&#x27;LCAP&#x27;,inplace=True)</span><br><span class="line">    </span><br><span class="line">    buy_list = lcap_data[:20].index</span><br><span class="line">    </span><br><span class="line">    account.close_all_positions()</span><br><span class="line">    for stock in buy_list:</span><br><span class="line">        account.order_pct_to(stock,0.05)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/22/%E7%86%9F%E6%82%89Uquant%E5%B9%B3%E5%8F%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/22/%E7%86%9F%E6%82%89Uquant%E5%B9%B3%E5%8F%B0/" class="post-title-link" itemprop="url">熟悉Uquant平台</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-22 13:31:33 / 修改时间：17:08:29" itemprop="dateCreated datePublished" datetime="2022-01-22T13:31:33+08:00">2022-01-22</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一、基本框架"><a href="#一、基本框架" class="headerlink" title="一、基本框架"></a>一、基本框架</h1><p>分为三个部分</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第一部分：策略参数</span></span><br><span class="line">start = <span class="string">&#x27;2014-01-01&#x27;</span>                      <span class="comment"># 回测起始时间</span></span><br><span class="line">end = <span class="string">&#x27;2015-01-01&#x27;</span>                       <span class="comment"># 回测结束时间</span></span><br><span class="line">benchmark = <span class="string">&#x27;HS300&#x27;</span>                       <span class="comment"># 策略参考标准</span></span><br><span class="line">universe = [<span class="string">&#x27;000001.XSHE&#x27;</span>, <span class="string">&#x27;600000.XSHG&#x27;</span>]        <span class="comment"># 证券池，支持股票和基金</span></span><br><span class="line">capital_base = <span class="number">100000</span>                      <span class="comment"># 起始资金</span></span><br><span class="line">freq = <span class="string">&#x27;d&#x27;</span>                             <span class="comment"># 策略类型，&#x27;d&#x27;表示日间策略使用日线回测，&#x27;m&#x27;表示日内策略使用分钟线回测</span></span><br><span class="line">refresh_rate = <span class="number">1</span>                         <span class="comment"># 调仓频率，表示执行handle_data的时间间隔，若freq = &#x27;d&#x27;时间间隔的单位为交易日，若freq = &#x27;m&#x27;时间间隔为分钟</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 第二部分：初始化策略，回测期间只运行一次，可以用于设置全局变量</span></span><br><span class="line"><span class="comment"># account是回测期间的虚拟交易账户，存储上述全局变量参数信息，并在整个策略执行期间更新并维护可用现金、证券的头寸、每日交易指令明细、历史行情数据等。</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">initialize</span>(<span class="params">account</span>):</span> </span><br><span class="line">    <span class="comment"># account.i = 1</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 第三部分：策略每天下单逻辑，执行完成后，会输出每天的下单指令列表</span></span><br><span class="line"><span class="comment"># 这个函数在每个交易日开盘前被调用，模拟每个交易日开盘前，交易策略会根据历史数据或者其他信息进行交易判断，生成交易指令</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_data</span>(<span class="params">account</span>):</span> </span><br><span class="line">    <span class="comment"># 这里编写下单逻辑</span></span><br><span class="line">    <span class="keyword">return</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-策略参数"><a href="#1-策略参数" class="headerlink" title="1.策略参数"></a>1.策略参数</h3><p>关于universe(证券池):下单与历史数据获取只能限于universe中的证券。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">universe = &#123;<span class="string">&#x27;600000.XSHG&#x27;</span>&#125;								<span class="comment">#某一支股票</span></span><br><span class="line">universe = set_universe(<span class="string">&#x27;HS300&#x27;</span>, data=<span class="string">&#x27;20220122&#x27;</span>)		<span class="comment">#沪深300的静态股票池</span></span><br><span class="line">universe = Dynamicuniverse(<span class="string">&#x27;HS300&#x27;</span>)						<span class="comment">#沪深300的动态股票池</span></span><br></pre></td></tr></table></figure>
+
+<p>关于refreash_data:策略运行的时间，与freq一起使用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">refresh_rate = n   	 <span class="comment">#表示n个freq运行一次策略</span></span><br><span class="line">refresh_rate = Weekly(<span class="number">1</span>)	<span class="comment">#每周第一天， Weekly(-1)每周最后一天，Monthly(1)每月第一天</span></span><br><span class="line"></span><br><span class="line">freq = <span class="string">&#x27;m&#x27;</span></span><br><span class="line">refreash_rate = (<span class="number">1</span>,<span class="number">1</span>)	<span class="comment">#前一个1表示每天运行，后一个表示每分钟运行一次</span></span><br></pre></td></tr></table></figure>
+
+<p>关于max_history_window:数据获取的历史跨度</p>
+<p>默认支持回溯100天数据，如果需要获取大于100天前的数据，需要指定。</p>
+<h3 id="2-交易用户配置"><a href="#2-交易用户配置" class="headerlink" title="2.交易用户配置"></a>2.交易用户配置</h3><ul>
+<li>使用字典完成账户创建，赋值给accounts</li>
+<li>key为自定义用户名，value为使用AccountConfig类生成的账户实例</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#定义账户参数</span></span><br><span class="line">capital_base = <span class="number">100000</span>		<span class="comment">#初始资金</span></span><br><span class="line">commission = Commision(<span class="number">0.005</span>,<span class="number">0.0010</span>,unit=<span class="string">&#x27;perValue&#x27;</span>)	<span class="comment">#佣金，buycost=0.005,sellcost=0.01.,unit=perValue意味着以股价百分比收手续费</span></span><br><span class="line"></span><br><span class="line">slippage = Slippage(0002, unit=<span class="string">&#x27;perValue&#x27;</span>)	<span class="comment">#滑点标准设置</span></span><br><span class="line"></span><br><span class="line">position_base = &#123;<span class="string">&#x27;000001.XSHE&#x27;</span>:<span class="number">100</span>&#125;			<span class="comment">#初始持仓</span></span><br><span class="line">cost_base = &#123;<span class="string">&#x27;000001.XSHE&#x27;</span>: <span class="number">10.00</span>&#125;			<span class="comment">#初始持仓成本</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#进行账户配置</span></span><br><span class="line">accounts = &#123;<span class="string">&#x27;self_account&#x27;</span>: AccountConfig(account_type=<span class="string">&#x27;security&#x27;</span>, capital_base=captial_base,commission=commision,slippage=slippage,position_base=position_base,cost_base=cost_base)&#125;</span><br><span class="line"><span class="comment">#账户对象获取,用账户名获取</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_data</span>(<span class="params">context</span>):</span></span><br><span class="line">	account = context.get.account(<span class="string">&#x27;self_accoutn&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="二、重要API"><a href="#二、重要API" class="headerlink" title="二、重要API"></a>二、重要API</h1><h3 id="1-context-策略运行环境"><a href="#1-context-策略运行环境" class="headerlink" title="1.context(策略运行环境)"></a>1.context(策略运行环境)</h3><ul>
+<li>表示测量有哪些环境，包含运行时间、行情等内容，还可以用于存储策略中生成的临时数据的存储</li>
+<li>测量框架在启动时创建Context实例，并以参数形式传递给initialize(context)和handle_rate(context),用于测量调度</li>
+<li>在回测时，context包含有哪些时间、回测参数、回测运行时数据等。模拟交易时，包含运行时间、模拟交易参数、实时运行数据等；</li>
+</ul>
+<p>context对象的实现和方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#属性</span></span><br><span class="line">context.now					<span class="comment">#测量运行时刻</span></span><br><span class="line">context.current_data</span><br><span class="line">context.current_minute</span><br><span class="line">context.previous</span><br><span class="line"><span class="comment">#方法</span></span><br><span class="line">context.current_price()		<span class="comment">#当前价格</span></span><br><span class="line"></span><br><span class="line">context.get_account()		<span class="comment">#获取账户类实例</span></span><br><span class="line">context.get_universe()		<span class="comment">#获得符合筛选条件的当天上市状态的资产池</span></span><br><span class="line">context.history()			<span class="comment">#获取时间序列</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>context.method</strong></p>
+<ul>
+<li><p>context.get_universe(asset_type,exclude_halt=False)获取符合条件的当天上市状态的资产池</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#使用</span><br><span class="line">universe = context.get_universe()</span><br><span class="line"></span><br><span class="line">asset_type				#获取指定资产类型的universe</span><br><span class="line">	#参数范围</span><br><span class="line">	#&#x27;stock&#x27;:股票  		&#x27;exchange_fund&#x27;:场内基金列表</span><br><span class="line">	#&#x27;index&#x27;:指数成分股列表 &#x27;otc_fund&#x27;:场外基金列表</span><br><span class="line">    #&#x27;futures&#x27;:期货合约列表 &#x27;base_futures&#x27;:普通期货合约列表</span><br><span class="line">    #&#x27;continuous_futures&#x27;:连续期货合约列表</span><br><span class="line">exclude_halt = False	#去除资产池中的停盘股票，仅适用于股票</span><br></pre></td></tr></table></figure>
+
+<p>返回的是股票列表（list）</p>
+</li>
+<li><p>context.history(symbol,attribute,time_range,freq=’1d’,style=’sat’,rtype=’frame’)获取K线、因子等时间序列数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#example；</span></span><br><span class="line">data = context.history([<span class="string">&#x27;600000.XSHG&#x27;</span>],<span class="string">&#x27;closePrice&#x27;</span>,<span class="number">10</span>,freq=<span class="string">&#x27;1d&#x27;</span>,rtype=<span class="string">&#x27;frame&#x27;</span>,style=<span class="string">&#x27;sat&#x27;</span>)</span><br><span class="line"><span class="comment">#参数说明</span></span><br><span class="line">symbol		<span class="comment">#需要获取的证券list，支持单个证券与证券list</span></span><br><span class="line">attribute	<span class="comment">#需要获取的属性，支持单个值或属性list</span></span><br><span class="line">		<span class="comment">#&#x27;openPrice&#x27;:前复权开盘开盘价	&#x27;highPrice&#x27;:前复权最高价</span></span><br><span class="line">		<span class="comment">#&#x27;lowPrice&#x27;:前复权最低价		  &#x27;close_price&#x27;:前复权收盘价</span></span><br><span class="line">		<span class="comment">#&#x27;preClosePrice&#x27;:前复权前收盘价  &#x27;turnoverVol&#x27;:前复权成交量</span></span><br><span class="line">		<span class="comment">#&#x27;turnoverValue&#x27;:前复权成交额	   &#x27;PE&#x27;,&#x27;PB&#x27;等优矿因子库因子</span></span><br><span class="line">time_range	 <span class="comment">#所需回溯的历史K线图条数，和freq属性相对应</span></span><br><span class="line">freq		 <span class="comment">#K线图周期，支持&#x27;1d&#x27;,&#x27;1m&#x27;,&#x27;5m&#x27;,&#x27;15m&#x27;,&#x27;30m&#x27;,&#x27;60m&#x27;等周期</span></span><br><span class="line">style		<span class="comment">#数据返回类型，可以选择&#x27;ast&#x27;,&#x27;sat&#x27;或&#x27;tas&#x27;三种</span></span><br><span class="line">			<span class="comment">#a:attribute,s:symbol,t:time</span></span><br><span class="line">rtype		<span class="comment">#返回值的数据类型，可以选择&#x27;frame&#x27;或&#x27;array&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>返回的是一个dict</p>
+</li>
+</ul>
+<h3 id="2-StockAccount-账户"><a href="#2-StockAccount-账户" class="headerlink" title="2.StockAccount(账户)"></a>2.StockAccount(账户)</h3><ul>
+<li><p>StockAccount表示交易账户，在参数初始化时创建</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用</span></span><br><span class="line">account = context.get_account(<span class="string">&#x27;self_account&#x27;</span>)	<span class="comment">#获取账户信息</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#account属性</span></span><br><span class="line">account.cash					<span class="comment">#当前账户可用资金</span></span><br><span class="line">account.porforlio_value			<span class="comment">#账户资产价值</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#account方法</span></span><br><span class="line">account.get_position()			<span class="comment">#获取账户指定资产的position实例</span></span><br><span class="line">account.get_positions()			<span class="comment">#获取所有资产的position实例</span></span><br><span class="line"></span><br><span class="line">account.order()					<span class="comment">#进行下单委托</span></span><br><span class="line">account.order_to()				<span class="comment">#通过下单，将某个股票的持仓调整到多少手</span></span><br><span class="line">account.order_pct()				<span class="comment">#根据账户总价值，按一定比例下单</span></span><br><span class="line">account.order_pct_to()			<span class="comment">#通过下单，将某个股票的持仓调整到持有总价值的一定比例</span></span><br><span class="line">account.close_all_position()	<span class="comment">#卖掉所有持仓</span></span><br></pre></td></tr></table></figure>
+
+<p>下单实例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> stock <span class="keyword">in</span> universe:</span><br><span class="line">	account.order(stock,<span class="number">100</span>)		<span class="comment">#买一手</span></span><br><span class="line">    account.orderto(stock,<span class="number">100</span>)		<span class="comment">#买到十手</span></span><br><span class="line">    account.order_pct(stock,<span class="number">0.1</span>)	<span class="comment">#买入总价值的0.1</span></span><br><span class="line">    account.order_pct_to(stock,<span class="number">0.1</span>)	<span class="comment">#买入股票到总价值的0.1	</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>account.method</strong></p>
+<ul>
+<li><p>account.get_position(symbol)获取指定资产的持仓信息,没有持仓则返回None</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">position = account.get_position(&#x27;600000.XSHG&#x27;)</span><br></pre></td></tr></table></figure></li>
+<li><p>account.get_positions(exclude_halt=False)获取所有持仓，返回字典,key为证券代码，value为position实例</p>
+</li>
+<li><p>account.order(symbol,amount,price=0,otype=’market’)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#symbol:需要交易的证券代码，包含后缀的字符串</span><br><span class="line">#amount:需要交易的证券代码为symbol的证券数量，正表示买入，负表示卖出</span><br><span class="line">#price:下限价单是的下单价格(仅日内策略可用)</span><br><span class="line">#otype:交易指令类型，可选&#x27;market&#x27;(市价单)和&#x27;limit&#x27;(限价单)(仅在日内交易时可用限价单)</span><br></pre></td></tr></table></figure></li>
+<li><p>account.order_to(symbol,amount,price=0,otype=’market’)类似于order</p>
+</li>
+<li><p>account.order_pct(symbol,pct)当前总价值的percent</p>
+</li>
+<li><p>account.order_pct_to(symbol,pct)到当前总价值的percent</p>
+</li>
+</ul>
+<h3 id="3-position"><a href="#3-position" class="headerlink" title="3.position"></a>3.position</h3><ul>
+<li><p>属性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">position.amount					#持仓数量</span><br><span class="line">position.available_amount		#可卖出的持仓数量</span><br><span class="line">position.profile				#持仓浮动盈亏（随市场价格实时变动）</span><br><span class="line">position.coast					#平均持仓成本</span><br><span class="line">position.value					#持仓市值（随市场价格实时变动）</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="三、其他重要操作"><a href="#三、其他重要操作" class="headerlink" title="三、其他重要操作"></a>三、其他重要操作</h1><h3 id="1-优矿因子库-数据-优矿-datayes-com"><a href="#1-优矿因子库-数据-优矿-datayes-com" class="headerlink" title="1.优矿因子库(数据 - 优矿 (datayes.com))"></a>1.优矿因子库(<a target="_blank" rel="noopener" href="https://uqer.datayes.com/data/browse/126/126001/?page=1">数据 - 优矿 (datayes.com)</a>)</h3><h3 id="2-signal框架"><a href="#2-signal框架" class="headerlink" title="2.signal框架"></a>2.signal框架</h3>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -335,14 +625,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

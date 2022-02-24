@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、前人的工作与问题​        目标检测需要一组预定义好的anchor box，存在一些缺点  对物体大小以及长宽比的变化比较敏感(确实，对于同一个物体，根据相机距离远近的不同，成像大小也不同，需要不同的框去包围；同时对于形态的变化也需要进行相应调整;anchor box的大小应该是能自适应调整的;什么特征会与anchor box大小相关？) anchor-based detector需要密">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文学习-FCOS">
+<meta property="og:url" content="http://example.com/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/index.html">
+<meta property="og:site_name" content="starC">
+<meta property="og:description" content="一、前人的工作与问题​        目标检测需要一组预定义好的anchor box，存在一些缺点  对物体大小以及长宽比的变化比较敏感(确实，对于同一个物体，根据相机距离远近的不同，成像大小也不同，需要不同的框去包围；同时对于形态的变化也需要进行相应调整;anchor box的大小应该是能自适应调整的;什么特征会与anchor box大小相关？) anchor-based detector需要密">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/3.png">
+<meta property="og:image" content="http://example.com/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/2.png">
+<meta property="og:image" content="http://example.com/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/4.png">
+<meta property="article:published_time" content="2022-02-23T01:59:54.000Z">
+<meta property="article:modified_time" content="2022-02-24T12:29:55.098Z">
+<meta property="article:author" content="chen cong">
+<meta property="article:tag" content="论文学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/3.png">
+
+<link rel="canonical" href="http://example.com/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>论文学习-FCOS | starC</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">starC</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一路同行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">14</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          论文学习-FCOS
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-23 09:59:54" itemprop="dateCreated datePublished" datetime="2022-02-23T09:59:54+08:00">2022-02-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-02-24 20:29:55" itemprop="dateModified" datetime="2022-02-24T20:29:55+08:00">2022-02-24</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、前人的工作与问题"><a href="#一、前人的工作与问题" class="headerlink" title="一、前人的工作与问题"></a>一、前人的工作与问题</h1><p>​        目标检测需要一组预定义好的anchor box，存在一些缺点</p>
+<ul>
+<li>对物体大小以及长宽比的变化比较敏感(确实，对于同一个物体，根据相机距离远近的不同，成像大小也不同，需要不同的框去包围；同时对于形态的变化也需要进行相应调整;anchor box的大小应该是能自适应调整的;什么特征会与anchor box大小相关？)</li>
+<li>anchor-based detector需要密集地将anchor box放置在图像上，而绝大多数都是负样本，一方面计算量太大，另一方面正负样本的比例失衡，不利于模型的训练</li>
+</ul>
+<p>希望设计FCN的框架去生成anchor-free的detector</p>
+<h1 id="二、做法"><a href="#二、做法" class="headerlink" title="二、做法"></a>二、做法</h1><p>per-pixel prediction + multi-level prediction+’center-ness’branch</p>
+<h3 id="1-Fully-Concolutional-One-Stage-Object-Detecor"><a href="#1-Fully-Concolutional-One-Stage-Object-Detecor" class="headerlink" title="1.Fully Concolutional One-Stage Object Detecor"></a>1.Fully Concolutional One-Stage Object Detecor</h3><p><strong>训练数据</strong>:输入image的anchor box由五元向量构成：四个anchor坐标+一个class坐标。将每个位置的pixel的信息作为training samples。对于处于(x,y)的像素，如果它落于任何ground-truth anchor box中且类别正是anchor box所框中物体的类别，则认为它是正样本；否则是负样本，类别为0(用于描述背景的类别)；而如果落在多个box中则认为是一个ambiguous sample.</p>
+<p><strong>regression target</strong>:对于每个位置的像素，预测四元距离向量，即与bounding box四条边的距离</p>
+<p><strong>network outputs</strong>:同regression target再,加上一个class vector。class vector是一个C维向量，利用的是C个二元分类器而不是一个多级分类器。</p>
+<p><strong>优势</strong>：在训练过程中可以充分利用foreground samples.</p>
+<p><strong>网络架构与Loss function</strong>:</p>
+<p><img src="/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/3.png" alt="3"></p>
+<p><img src="/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/2.png" alt="2"></p>
+<h3 id="2-Multi-level-Prediction-with-FPN"><a href="#2-Multi-level-Prediction-with-FPN" class="headerlink" title="2.Multi-level Prediction with FPN"></a>2.Multi-level Prediction with FPN</h3><p><strong>两个可能存在的问题</strong>：</p>
+<ul>
+<li>用CNN处理具有大步长的feature map可能带来较低的BPR</li>
+<li>ground-truth box的重叠可能会模棱两可，该位置的像素对应哪个box呢？</li>
+</ul>
+<p><strong>做法：</strong>首先获取不同大小的feature maps{P<sub>3</sub>,P<sub>4</sub>,P<sub>5</sub>,P<sub>6</sub>,P<sub>7</sub>},在这些feature maps上做detect得到很多regression targets,对这些detect targets限制大小。最终如果一个位置的像素仍与多个box匹配，则选择面积最小的box作为结果输出。</p>
+<p><strong>细节：</strong>heads模块在不同feature levels中共享，优点是detector更高效且提升性能；但是由于不同feature levels得到的box的大小具有不同的范围，所以不太合理，解决方法是使用自适应的指数函数exp(s<sub>i</sub>x)来调整feature level P<sub>i</sub>.</p>
+<h3 id="3-Center-ness-for-FCOS"><a href="#3-Center-ness-for-FCOS" class="headerlink" title="3.Center-ness for FCOS"></a>3.Center-ness for FCOS</h3><p>**问题:**大量低质量的bounding box被远离物体的中心的点产生</p>
+<p><strong>做法：</strong>增加了一个single branch来预测一个点的”center-ness”,”center-ness”描述了从该点到该点属于的物体中心的归一化距离。center-ness 在0到1之间且用BCE训练，该loss在loss function中体现。在测试过程中，class由初始预测class与center-ness相乘得到，从而可能远离物体中心的属于物体的点在NMS步骤中被滤除。</p>
+<p><img src="/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/4.png" alt="4"></p>
+<h1 id="三、思考"><a href="#三、思考" class="headerlink" title="三、思考"></a>三、思考</h1><p>1.anchor-box free的想法很厉害，将image-level的问题用pixel-level解决，对每个位置上的像素进行预测bounding box与class；后续的设计都从而展开；多级预测的思想也很厉害，在降采样的图像金字塔上分别做预测，能解决ambiguous sample的问题，也能增加预测结果的鲁棒性。</p>
+<p>2.我的一些想法</p>
+<p>关于bounding box:</p>
+<p>是否需要绘制bounding box?bounding box依赖于该物体像素的分布，如果能准确预测每点像素的值，是否Bounding box也可以从这些像素的位置中推导得到(取到上下、左右边界即可)，也即图像语义分割+类别标注+bounding box绘制能否达到同样效果？这样也能直接解决multi bounding box的问题。但是感觉对单点做分类好难。</p>
+<p>能不能再加一个post-process:根据一个限制条件：同一物体的点的regression targets在邻域内应当是连续的，不能出现大的跳变来提高bounding box的准确性。或者在loss function中体现？</p>
+<p>关于点：</p>
+<p>单独的点是没有任何意义的，只有将点放在上下文中它才能构成物体或者背景，但在从实物到图像的采样过程中，点的像素值具有噪声也受光照等因素影响。CNN的卷积操作、池化操作都能起扩大感受野的作用，将孤立的点与邻域的点联系起来并提取特征，从关联性的角度看，self-attention能否起到类似的作用？不需要对整张图片做self-attention,能不能用local self-attention代替卷积？或者用self-attention与CNN相结合？</p>
+<p>以及局部特征的提取？卷积运算简单且高效，但是固定窗口是否略显僵硬？虽然可以用不同大小的卷积进行操作。而且特征的体现还是以像素值进行表征，是否过于简单？</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" rel="tag"># 论文学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/23/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" rel="prev" title="数学建模">
+      <i class="fa fa-chevron-left"></i> 数学建模
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/24/%E6%8A%95%E8%B5%84%E5%AD%A6/" rel="next" title="投资学">
+      投资学 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E4%BA%BA%E7%9A%84%E5%B7%A5%E4%BD%9C%E4%B8%8E%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">一、前人的工作与问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%81%9A%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">二、做法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Fully-Concolutional-One-Stage-Object-Detecor"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.Fully Concolutional One-Stage Object Detecor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Multi-level-Prediction-with-FPN"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.Multi-level Prediction with FPN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Center-ness-for-FCOS"><span class="nav-number">2.0.3.</span> <span class="nav-text">3.Center-ness for FCOS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%80%9D%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">三、思考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="chen cong"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">chen cong</p>
+  <div class="site-description" itemprop="description">personal blog of cc</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        <div id="music163player">
+        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=86 src="//music.163.com/outchain/player?type=2&id=1459343252&auto=1&height=66"></iframe>
+        </iframe>
+      </div>
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈聪</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
