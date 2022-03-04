@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、任务概要与方法简述1.概要利用多相机多视角拍摄的图像做3D目标检测，也需要输出3D空间中的信息 目前很多工作都是直接使用2D目标检测问题的框架，从单目图像中估计3D bounding boxes，而没有考虑到3D场景结构或传感器信息。所以这些方法需要使用post-process来结合不同相机图像预测的bounding box以及剔除redundant boxes。 或者根据2D的特征信息利用d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文学习-Detr3D">
+<meta property="og:url" content="http://example.com/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/index.html">
+<meta property="og:site_name" content="starC">
+<meta property="og:description" content="一、任务概要与方法简述1.概要利用多相机多视角拍摄的图像做3D目标检测，也需要输出3D空间中的信息 目前很多工作都是直接使用2D目标检测问题的框架，从单目图像中估计3D bounding boxes，而没有考虑到3D场景结构或传感器信息。所以这些方法需要使用post-process来结合不同相机图像预测的bounding box以及剔除redundant boxes。 或者根据2D的特征信息利用d">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/1.png">
+<meta property="og:image" content="http://example.com/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/2.png">
+<meta property="og:image" content="http://example.com/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/3.png">
+<meta property="og:image" content="http://example.com/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/4.png">
+<meta property="og:image" content="http://example.com/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/5.png">
+<meta property="og:image" content="http://example.com/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/6.png">
+<meta property="article:published_time" content="2022-03-04T02:36:40.000Z">
+<meta property="article:modified_time" content="2022-03-04T15:07:07.668Z">
+<meta property="article:author" content="chen cong">
+<meta property="article:tag" content="论文学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/1.png">
+
+<link rel="canonical" href="http://example.com/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>论文学习-Detr3D | starC</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">starC</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一路同行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">19</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          论文学习-Detr3D
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-04 10:36:40 / 修改时间：23:07:07" itemprop="dateCreated datePublished" datetime="2022-03-04T10:36:40+08:00">2022-03-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、任务概要与方法简述"><a href="#一、任务概要与方法简述" class="headerlink" title="一、任务概要与方法简述"></a>一、任务概要与方法简述</h1><h3 id="1-概要"><a href="#1-概要" class="headerlink" title="1.概要"></a>1.概要</h3><p>利用多相机多视角拍摄的图像做3D目标检测，也需要输出3D空间中的信息</p>
+<p>目前很多工作都是直接使用2D目标检测问题的框架，从单目图像中估计3D bounding boxes，而没有考虑到3D场景结构或传感器信息。所以这些方法需要使用post-process来结合不同相机图像预测的bounding box以及剔除redundant boxes。</p>
+<p>或者根据2D的特征信息利用depth prediction network做3D目标检测，或者做3D重建去达到类似激光雷达传感器获得的作用，随后再用3D信息做目标检测。这类方法的问题主要是重建3D场景或者恢复深度信息时的误差。</p>
+<h3 id="2-方法"><a href="#2-方法" class="headerlink" title="2.方法"></a>2.方法</h3><ul>
+<li>starts from a sparse set of object priors, shared across the dataset and learned end-to-end</li>
+<li><strong>Back-project</strong> a set of reference points decoded from object priors to each camera and <strong>fetch the corresponding image features</strong> extracted by a ResNet backbone</li>
+<li>The features collected from the image features of the reference points then <strong>interact with each other through a multi-head self-attention layer</strong></li>
+<li>After <strong>a series of self-attention layers</strong>, we read off <strong>bounding box parameters</strong> from every layer and use a set-to-set <strong>loss inspired by DETR</strong> to evaluate performance</li>
+</ul>
+<h1 id="二、做法细节"><a href="#二、做法细节" class="headerlink" title="二、做法细节"></a>二、做法细节</h1><p>输入：K个相机采样的图像，相机参数，透视矩阵，ground-truth bounding boxes B与对应的categorical labels.Bounding box包含参数有：position,size,heading angle and velocity in birds-eye view(BEV)</p>
+<p>输出：预测包含上述参数的bounding box与类别</p>
+<h3 id="1-特征提取"><a href="#1-特征提取" class="headerlink" title="1.特征提取"></a>1.特征提取</h3><p>使用ResNet与FPN从输出图像中提取得到四组features, F<sub>1</sub>,F<sub>2</sub>,F<sub>3</sub>,F<sub>4</sub>，每一组特征都是不同level的特征用于提供探测不同大小的物体所需要的的信息</p>
+<h3 id="2-Detection-Head"><a href="#2-Detection-Head" class="headerlink" title="2.Detection Head"></a>2.Detection Head</h3><p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/1.png" alt="1"></p>
+<p>采取迭代方式，用L层layers去估计bounding boxes,以下步骤：</p>
+<ul>
+<li>predict a set of bounding box centers associated with object queries;</li>
+<li>project these centers into all the feature maps using the camera transformation matrices;</li>
+<li>sample features via bilinear interpolation and incorporate them into object queries; </li>
+<li>describe object interactions using multi-head attention.</li>
+</ul>
+<p>先利用一个神经网络作为decoder生成reference point</p>
+<p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/2.png" alt="2"></p>
+<p>将坐标变成其次坐标并利用不同相机的转化矩阵将reference point的坐标利用透视矩阵做变换，考虑到不同level的feature maps的影响需要做归一化。</p>
+<p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/3.png" alt="3"></p>
+<p>再利用双线性插值采样feature</p>
+<p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/4.png" alt="4"></p>
+<p>但是不是每个reference point都被被每个相机所采集，所以需要使用sigma来判断是都reference point被投影出了图像平面，最终的feature与下一层的object query由下述公式获取</p>
+<p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/5.png" alt="5"></p>
+<p>最后对每个object query，使用两个神经网络预测bounding box与类别</p>
+<p>对迭代过程中每层都会预测，并计算loss来训练网络，但只会取最后一次的结果作为输出</p>
+<p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/6.png" alt="6"></p>
+<h3 id="3-Loss"><a href="#3-Loss" class="headerlink" title="3.Loss"></a>3.Loss</h3><p>很显然loss源于两个因素，class prediction与bounding box parameters prediction</p>
+<p>需要注意预测出的bounding box与ground box的数目不同，预测的往往更多，需要做padding</p>
+<h1 id="三、思考"><a href="#三、思考" class="headerlink" title="三、思考"></a>三、思考</h1><p>1.首先肯定不能直接做3D重建再利用3D信息来做objection，因为误差是会传递的，而且这两个问题虽然逻辑上有一致性但它们的loss没有明显的正相关性，而且3D重建的error与loss难以控制。</p>
+<p>特斯拉的做法：先直接将相机标定信息作为一个vector一起作为输入；之后又改为用一个变换矩阵对输入的每张图像做一次处理</p>
+<p>我觉得可以学习特斯拉的做法，这篇paper看下来对于不用像机之间的联系是将inference point通过透视变换投影到原来的图像平面上，我感觉多视角的信息还是没有很好的结合在一起</p>
+<p>2.这篇论文的流程：神经网络作为encoder提取特征–&gt;&gt;object queires作为decoder生成对应的inference point的3D坐标–&gt;&gt;根据相机矩阵映射会图像平面–&gt;&gt;双线性插值提取局部特征–&gt;&gt;利用局部特征用网络去预测box和category</p>
+<p>转了一圈最终落脚点还是在图像信息上，3D坐标的计算也是个黑箱，哎，不是很懂。只是感觉对于3D的高纬度信息的产生和利用有点少。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" rel="tag"># 论文学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/01/%E6%8A%95%E8%B5%84%E5%AD%A6%E9%98%85%E8%AF%BB%E6%9D%90%E6%96%99/" rel="prev" title="投资学阅读材料">
+      <i class="fa fa-chevron-left"></i> 投资学阅读材料
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%BB%E5%8A%A1%E6%A6%82%E8%A6%81%E4%B8%8E%E6%96%B9%E6%B3%95%E7%AE%80%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">一、任务概要与方法简述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A6%82%E8%A6%81"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.概要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%96%B9%E6%B3%95"><span class="nav-number">1.0.2.</span> <span class="nav-text">2.方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%81%9A%E6%B3%95%E7%BB%86%E8%8A%82"><span class="nav-number">2.</span> <span class="nav-text">二、做法细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.特征提取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Detection-Head"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.Detection Head</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Loss"><span class="nav-number">2.0.3.</span> <span class="nav-text">3.Loss</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%80%9D%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">三、思考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="chen cong"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">chen cong</p>
+  <div class="site-description" itemprop="description">personal blog of cc</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        <div id="music163player">
+        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=86 src="//music.163.com/outchain/player?type=2&id=1459343252&auto=1&height=66"></iframe>
+        </iframe>
+      </div>
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈聪</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

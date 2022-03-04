@@ -123,7 +123,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">19</span></a>
 
   </li>
   </ul>
@@ -149,6 +149,102 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/" class="post-title-link" itemprop="url">论文学习-Detr3D</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-04 10:36:40 / 修改时间：23:07:07" itemprop="dateCreated datePublished" datetime="2022-03-04T10:36:40+08:00">2022-03-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一、任务概要与方法简述"><a href="#一、任务概要与方法简述" class="headerlink" title="一、任务概要与方法简述"></a>一、任务概要与方法简述</h1><h3 id="1-概要"><a href="#1-概要" class="headerlink" title="1.概要"></a>1.概要</h3><p>利用多相机多视角拍摄的图像做3D目标检测，也需要输出3D空间中的信息</p>
+<p>目前很多工作都是直接使用2D目标检测问题的框架，从单目图像中估计3D bounding boxes，而没有考虑到3D场景结构或传感器信息。所以这些方法需要使用post-process来结合不同相机图像预测的bounding box以及剔除redundant boxes。</p>
+<p>或者根据2D的特征信息利用depth prediction network做3D目标检测，或者做3D重建去达到类似激光雷达传感器获得的作用，随后再用3D信息做目标检测。这类方法的问题主要是重建3D场景或者恢复深度信息时的误差。</p>
+<h3 id="2-方法"><a href="#2-方法" class="headerlink" title="2.方法"></a>2.方法</h3><ul>
+<li>starts from a sparse set of object priors, shared across the dataset and learned end-to-end</li>
+<li><strong>Back-project</strong> a set of reference points decoded from object priors to each camera and <strong>fetch the corresponding image features</strong> extracted by a ResNet backbone</li>
+<li>The features collected from the image features of the reference points then <strong>interact with each other through a multi-head self-attention layer</strong></li>
+<li>After <strong>a series of self-attention layers</strong>, we read off <strong>bounding box parameters</strong> from every layer and use a set-to-set <strong>loss inspired by DETR</strong> to evaluate performance</li>
+</ul>
+<h1 id="二、做法细节"><a href="#二、做法细节" class="headerlink" title="二、做法细节"></a>二、做法细节</h1><p>输入：K个相机采样的图像，相机参数，透视矩阵，ground-truth bounding boxes B与对应的categorical labels.Bounding box包含参数有：position,size,heading angle and velocity in birds-eye view(BEV)</p>
+<p>输出：预测包含上述参数的bounding box与类别</p>
+<h3 id="1-特征提取"><a href="#1-特征提取" class="headerlink" title="1.特征提取"></a>1.特征提取</h3><p>使用ResNet与FPN从输出图像中提取得到四组features, F<sub>1</sub>,F<sub>2</sub>,F<sub>3</sub>,F<sub>4</sub>，每一组特征都是不同level的特征用于提供探测不同大小的物体所需要的的信息</p>
+<h3 id="2-Detection-Head"><a href="#2-Detection-Head" class="headerlink" title="2.Detection Head"></a>2.Detection Head</h3><p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/1.png" alt="1"></p>
+<p>采取迭代方式，用L层layers去估计bounding boxes,以下步骤：</p>
+<ul>
+<li>predict a set of bounding box centers associated with object queries;</li>
+<li>project these centers into all the feature maps using the camera transformation matrices;</li>
+<li>sample features via bilinear interpolation and incorporate them into object queries; </li>
+<li>describe object interactions using multi-head attention.</li>
+</ul>
+<p>先利用一个神经网络作为decoder生成reference point</p>
+<p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/2.png" alt="2"></p>
+<p>将坐标变成其次坐标并利用不同相机的转化矩阵将reference point的坐标利用透视矩阵做变换，考虑到不同level的feature maps的影响需要做归一化。</p>
+<p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/3.png" alt="3"></p>
+<p>再利用双线性插值采样feature</p>
+<p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/4.png" alt="4"></p>
+<p>但是不是每个reference point都被被每个相机所采集，所以需要使用sigma来判断是都reference point被投影出了图像平面，最终的feature与下一层的object query由下述公式获取</p>
+<p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/5.png" alt="5"></p>
+<p>最后对每个object query，使用两个神经网络预测bounding box与类别</p>
+<p>对迭代过程中每层都会预测，并计算loss来训练网络，但只会取最后一次的结果作为输出</p>
+<p><img src="/2022/03/04/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-Detr3D/6.png" alt="6"></p>
+<h3 id="3-Loss"><a href="#3-Loss" class="headerlink" title="3.Loss"></a>3.Loss</h3><p>很显然loss源于两个因素，class prediction与bounding box parameters prediction</p>
+<p>需要注意预测出的bounding box与ground box的数目不同，预测的往往更多，需要做padding</p>
+<h1 id="三、思考"><a href="#三、思考" class="headerlink" title="三、思考"></a>三、思考</h1><p>1.首先肯定不能直接做3D重建再利用3D信息来做objection，因为误差是会传递的，而且这两个问题虽然逻辑上有一致性但它们的loss没有明显的正相关性，而且3D重建的error与loss难以控制。</p>
+<p>特斯拉的做法：先直接将相机标定信息作为一个vector一起作为输入；之后又改为用一个变换矩阵对输入的每张图像做一次处理</p>
+<p>我觉得可以学习特斯拉的做法，这篇paper看下来对于不用像机之间的联系是将inference point通过透视变换投影到原来的图像平面上，我感觉多视角的信息还是没有很好的结合在一起</p>
+<p>2.这篇论文的流程：神经网络作为encoder提取特征–&gt;&gt;object queires作为decoder生成对应的inference point的3D坐标–&gt;&gt;根据相机矩阵映射会图像平面–&gt;&gt;双线性插值提取局部特征–&gt;&gt;利用局部特征用网络去预测box和category</p>
+<p>转了一圈最终落脚点还是在图像信息上，3D坐标的计算也是个黑箱，哎，不是很懂。只是感觉对于3D的高纬度信息的产生和利用有点少。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -910,107 +1006,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="chen cong">
-      <meta itemprop="description" content="personal blog of cc">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starC">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/" class="post-title-link" itemprop="url">论文学习-DMF</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-02-13 10:51:45 / 修改时间：11:06:56" itemprop="dateCreated datePublished" datetime="2022-02-13T10:51:45+08:00">2022-02-13</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="一、关于Few-shot-Learning"><a href="#一、关于Few-shot-Learning" class="headerlink" title="一、关于Few-shot Learning"></a>一、关于Few-shot Learning</h1><p>​        Few-shot Learning与Meta-learning相似，可以视为其的一种应用，但又有区别。在图像分类领域：Few-shot Learning的目的是根据已知给定的extremly limited examples，学习到知识并用来识别新的类别。</p>
-<p>​        最naive的想法是用深度卷积神经网络学习到support set中类别的一些特征，在query set做预测时直接比较特征间的相似性，但是直接使用卷积学到的特征受限很于数据，对于没有见过的类别很难泛化其分类能力。需要进一步增加模型特征提取与匹配的能力。</p>
-<h1 id="二、Learning-Dynamic-Alignment-via-Meta-filter-for-Few-shot-Learning的思想"><a href="#二、Learning-Dynamic-Alignment-via-Meta-filter-for-Few-shot-Learning的思想" class="headerlink" title="二、Learning Dynamic Alignment via Meta-filter for Few-shot Learning的思想"></a>二、Learning Dynamic Alignment via Meta-filter for Few-shot Learning的思想</h1><h4 id="1-前人的工作"><a href="#1-前人的工作" class="headerlink" title="1.前人的工作"></a>1.前人的工作</h4><p>​        参考CAN和FEAT这两篇论文。它们的思想是aggregates support knowledge to formalize an alignment function for query samples以此达到特征匹配的目的(没看过这两篇，咱也不懂)。</p>
-<p>​        作者认为存在一些缺陷：</p>
-<ul>
-<li><p>Roughness，作者认为图像特征的空间位置的差异性(空间分辨率spaial resolution)比通道间的差异性大得多而很少有工作在提取特征是关注channel 相关特征。</p>
-<p>如下图，特征应该是黄色区域，channel1提现得很好而channel2较差。CAN做特征匹配时会赋予两个通道相同的权重，而DMF不会</p>
-<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-2.png" alt="DMF-2"></p>
-</li>
-<li><p>Redundant matching. 冗余主要出现在两个地方，一个是待识别的物体可能在一张图像中多次出现；其次是当 aligning each query position时，会利用所有的support feature，效率较低(不是很懂,大受震撼)。</p>
-</li>
-<li><p>Inflexible alignment. The alignment strategy in these works only runs one time for all tasks. Thus, for those diffificult ones, the alignment may be insuffificient to appropriately embed the support knowledge into query feature.</p>
-</li>
-</ul>
-<h2 id="2-作者的方法"><a href="#2-作者的方法" class="headerlink" title="2.作者的方法"></a>2.作者的方法</h2><ul>
-<li>Dynamic meta-filter. 用于高效特征匹配</li>
-<li>Dynamic sample and group strategy.提升Dynamic meta-filter的灵活性与效率。</li>
-<li>Neural ODE. </li>
-</ul>
-<p>预测一个和空间位置、通道相关的Dynamic meta-filter，将filters应用于feature positions而不是整个support feature。Features positions不是采取的固定的而是学习得到动态采样策略。同时为了使匹配能适用于更复杂的任务而固定超参数很难控制匹配的过程、程度，所以采用ODE的方法执行residual alignment的过程并在迭代过程中自适应地调整步长以获得最终解。</p>
-<p>在获取到aligned query feature后，将support knowledge以不可学习方式聚合在一起，利用mata-slassifier做最终的预测。</p>
-<h2 id="3-相关工作"><a href="#3-相关工作" class="headerlink" title="3.相关工作"></a>3.相关工作</h2><h5 id="1-Few-shot-recognition"><a href="#1-Few-shot-recognition" class="headerlink" title="1.Few-shot recognition."></a>1.Few-shot recognition.</h5><p>目前两种主流解决策略: 一种是optimization-based methods.首先根据base class data训练一个网络，再在遇到未见过的类别、数据时微调网络或者改变整个网络架构。第二种是metric-based method，应用现成的或者学习到的图像特征做FSL。</p>
-<h5 id="2-Dynamic-Sampling"><a href="#2-Dynamic-Sampling" class="headerlink" title="2.Dynamic Sampling"></a>2.Dynamic Sampling</h5><p>以前的采样方法：固定大小采样，动态区域采样但是滤波器大小固定。</p>
-<p>作者：先用动态采样策略获取feature position的邻域再再这个区域上预测得到与位置和通道相关的滤波器。</p>
-<h5 id="3-Input-dependent-weights"><a href="#3-Input-dependent-weights" class="headerlink" title="3.Input dependent weights"></a>3.Input dependent weights</h5><p>也是learnable module的一种体现，weights不是直接优化得到而是与输入数据相关。</p>
-<h5 id="4-Neural-Ordinary-Difference-Equation"><a href="#4-Neural-Ordinary-Difference-Equation" class="headerlink" title="4.Neural Ordinary Difference Equation"></a>4.Neural Ordinary Difference Equation</h5><p>Neural ODE将神经网络的前递视作ODE的一种离散形式(???为什么是离散的？因为网络架构是固定的吗？)。在此情况下，可以加入一个时间变量控制输出以使得修改neural networks为neural ODE。</p>
-<h1 id="三、DMF架构与操作"><a href="#三、DMF架构与操作" class="headerlink" title="三、DMF架构与操作"></a>三、DMF架构与操作</h1><h5 id="1-DMF架构"><a href="#1-DMF架构" class="headerlink" title="1.DMF架构"></a>1.DMF架构</h5><p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-3.png" alt="DMF-3"></p>
-<p>包含四个子模块：特征提取器f<sub>emb</sub>,动态匹配模块f<sub>d</sub>,  meta-classifier f<sub>mc</sub>,  global-classifier f<sub>gc</sub>. 在一次Episode中，给定每对support image和query image，首先利用特征提取器提取得到大小为[c, h, w]的feature maps，对应channel,height和width；再动态采样获取特征；用f<sub>d</sub>进行特征的动态匹配；最后用f<sub>mc</sub>根据query feature与support feature之间的相似性输出confidence score.</p>
-<h5 id="2-DMF-Dynamic-Meta-filter-for-Adaptive-Alignment"><a href="#2-DMF-Dynamic-Meta-filter-for-Adaptive-Alignment" class="headerlink" title="2.DMF(Dynamic Meta-filter for Adaptive Alignment)"></a>2.DMF(Dynamic Meta-filter for Adaptive Alignment)</h5><p>关于分组卷积：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/shine-lee/p/10243114.html">Group Convolution分组卷积，以及Depthwise Convolution和Global Depthwise Convolution - shine-lee - 博客园 (cnblogs.com)</a></p>
-<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-4.png" alt="DMF-4"></p>
-<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-5.png" alt="DMF-5"></p>
-<p>对support feature先做一次卷积，卷积核大小为3，输出通道为c x K x K，可以视为图像每个位置的像素对应一个c x K x K大小的张量，再将其视为该位置一个输出通道为c，核大小为K的卷积核。对query feature的每个位置使用对应的卷积核进行group为3的<strong>分组卷积</strong>，与原本的query feature相加得到aligned query feature. </p>
-<p>值得注意：channel wise正是通过分组卷积实现的。每个K x K的卷积核对应于原query maps中的一张query feature。</p>
-<h5 id="3-Dynamic-Sampling"><a href="#3-Dynamic-Sampling" class="headerlink" title="3.Dynamic Sampling"></a>3.Dynamic Sampling</h5><p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-6.png" alt="DMF-6"></p>
-<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-7.png" alt="DMF-7"></p>
-<p>先将support feature与query feature拼接在一起，用核大小为5，通道为9的卷积核进行卷积，生成一张9 x h x w的feature mapM。M的每个位置的9个数值包含生成在位置(i,j)的卷积核的信息。</p>
-<h5 id="4-Adaptive-Alignment"><a href="#4-Adaptive-Alignment" class="headerlink" title="4.Adaptive Alignment"></a>4.Adaptive Alignment</h5><p>重复匹配过程</p>
-<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-8.png" alt="DMF-8"></p>
-<p>F是前面的动态卷积的过程。问题是超参数T的调整，对于FSL，面对不同的任务，超参数T应该不同，所以作者使用了Neural ODE的方法。</p>
-<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-9.png" alt="DMF-9"></p>
-<h5 id="5-Meta-classifier"><a href="#5-Meta-classifier" class="headerlink" title="5.Meta classifier"></a>5.Meta classifier</h5><p>获取Dynamically aligned query feature后，不需要任何可学习参数生成一个meta-classifier。方法：使用glaobal averge pooling将support feature聚集到一个c x 1 x 1的feature上，将这个c x 1 x 1的张量作为一个卷积滤波器，也即架构中的f<sub>mc</sub>，并运用在aligned上可以得到一个1 x h x w的张量。如果query set中某张图属于category c,则它们对应位置应该有很高数值。</p>
-<h1 id="四、实现细节"><a href="#四、实现细节" class="headerlink" title="四、实现细节"></a>四、实现细节</h1><h5 id="1-损失函数"><a href="#1-损失函数" class="headerlink" title="1.损失函数"></a>1.损失函数</h5><p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-10.png" alt="DMF-10"></p>
-<h5 id="2-网络架构"><a href="#2-网络架构" class="headerlink" title="2.网络架构"></a>2.网络架构</h5><p>使用ResNet12去除最后的池化层用于特征提取，feature map</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1085,7 +1080,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

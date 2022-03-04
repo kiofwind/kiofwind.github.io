@@ -123,7 +123,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">19</span></a>
 
   </li>
   </ul>
@@ -149,6 +149,107 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/" class="post-title-link" itemprop="url">论文学习-DMF</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-13 10:51:45 / 修改时间：11:06:56" itemprop="dateCreated datePublished" datetime="2022-02-13T10:51:45+08:00">2022-02-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一、关于Few-shot-Learning"><a href="#一、关于Few-shot-Learning" class="headerlink" title="一、关于Few-shot Learning"></a>一、关于Few-shot Learning</h1><p>​        Few-shot Learning与Meta-learning相似，可以视为其的一种应用，但又有区别。在图像分类领域：Few-shot Learning的目的是根据已知给定的extremly limited examples，学习到知识并用来识别新的类别。</p>
+<p>​        最naive的想法是用深度卷积神经网络学习到support set中类别的一些特征，在query set做预测时直接比较特征间的相似性，但是直接使用卷积学到的特征受限很于数据，对于没有见过的类别很难泛化其分类能力。需要进一步增加模型特征提取与匹配的能力。</p>
+<h1 id="二、Learning-Dynamic-Alignment-via-Meta-filter-for-Few-shot-Learning的思想"><a href="#二、Learning-Dynamic-Alignment-via-Meta-filter-for-Few-shot-Learning的思想" class="headerlink" title="二、Learning Dynamic Alignment via Meta-filter for Few-shot Learning的思想"></a>二、Learning Dynamic Alignment via Meta-filter for Few-shot Learning的思想</h1><h4 id="1-前人的工作"><a href="#1-前人的工作" class="headerlink" title="1.前人的工作"></a>1.前人的工作</h4><p>​        参考CAN和FEAT这两篇论文。它们的思想是aggregates support knowledge to formalize an alignment function for query samples以此达到特征匹配的目的(没看过这两篇，咱也不懂)。</p>
+<p>​        作者认为存在一些缺陷：</p>
+<ul>
+<li><p>Roughness，作者认为图像特征的空间位置的差异性(空间分辨率spaial resolution)比通道间的差异性大得多而很少有工作在提取特征是关注channel 相关特征。</p>
+<p>如下图，特征应该是黄色区域，channel1提现得很好而channel2较差。CAN做特征匹配时会赋予两个通道相同的权重，而DMF不会</p>
+<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-2.png" alt="DMF-2"></p>
+</li>
+<li><p>Redundant matching. 冗余主要出现在两个地方，一个是待识别的物体可能在一张图像中多次出现；其次是当 aligning each query position时，会利用所有的support feature，效率较低(不是很懂,大受震撼)。</p>
+</li>
+<li><p>Inflexible alignment. The alignment strategy in these works only runs one time for all tasks. Thus, for those diffificult ones, the alignment may be insuffificient to appropriately embed the support knowledge into query feature.</p>
+</li>
+</ul>
+<h2 id="2-作者的方法"><a href="#2-作者的方法" class="headerlink" title="2.作者的方法"></a>2.作者的方法</h2><ul>
+<li>Dynamic meta-filter. 用于高效特征匹配</li>
+<li>Dynamic sample and group strategy.提升Dynamic meta-filter的灵活性与效率。</li>
+<li>Neural ODE. </li>
+</ul>
+<p>预测一个和空间位置、通道相关的Dynamic meta-filter，将filters应用于feature positions而不是整个support feature。Features positions不是采取的固定的而是学习得到动态采样策略。同时为了使匹配能适用于更复杂的任务而固定超参数很难控制匹配的过程、程度，所以采用ODE的方法执行residual alignment的过程并在迭代过程中自适应地调整步长以获得最终解。</p>
+<p>在获取到aligned query feature后，将support knowledge以不可学习方式聚合在一起，利用mata-slassifier做最终的预测。</p>
+<h2 id="3-相关工作"><a href="#3-相关工作" class="headerlink" title="3.相关工作"></a>3.相关工作</h2><h5 id="1-Few-shot-recognition"><a href="#1-Few-shot-recognition" class="headerlink" title="1.Few-shot recognition."></a>1.Few-shot recognition.</h5><p>目前两种主流解决策略: 一种是optimization-based methods.首先根据base class data训练一个网络，再在遇到未见过的类别、数据时微调网络或者改变整个网络架构。第二种是metric-based method，应用现成的或者学习到的图像特征做FSL。</p>
+<h5 id="2-Dynamic-Sampling"><a href="#2-Dynamic-Sampling" class="headerlink" title="2.Dynamic Sampling"></a>2.Dynamic Sampling</h5><p>以前的采样方法：固定大小采样，动态区域采样但是滤波器大小固定。</p>
+<p>作者：先用动态采样策略获取feature position的邻域再再这个区域上预测得到与位置和通道相关的滤波器。</p>
+<h5 id="3-Input-dependent-weights"><a href="#3-Input-dependent-weights" class="headerlink" title="3.Input dependent weights"></a>3.Input dependent weights</h5><p>也是learnable module的一种体现，weights不是直接优化得到而是与输入数据相关。</p>
+<h5 id="4-Neural-Ordinary-Difference-Equation"><a href="#4-Neural-Ordinary-Difference-Equation" class="headerlink" title="4.Neural Ordinary Difference Equation"></a>4.Neural Ordinary Difference Equation</h5><p>Neural ODE将神经网络的前递视作ODE的一种离散形式(???为什么是离散的？因为网络架构是固定的吗？)。在此情况下，可以加入一个时间变量控制输出以使得修改neural networks为neural ODE。</p>
+<h1 id="三、DMF架构与操作"><a href="#三、DMF架构与操作" class="headerlink" title="三、DMF架构与操作"></a>三、DMF架构与操作</h1><h5 id="1-DMF架构"><a href="#1-DMF架构" class="headerlink" title="1.DMF架构"></a>1.DMF架构</h5><p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-3.png" alt="DMF-3"></p>
+<p>包含四个子模块：特征提取器f<sub>emb</sub>,动态匹配模块f<sub>d</sub>,  meta-classifier f<sub>mc</sub>,  global-classifier f<sub>gc</sub>. 在一次Episode中，给定每对support image和query image，首先利用特征提取器提取得到大小为[c, h, w]的feature maps，对应channel,height和width；再动态采样获取特征；用f<sub>d</sub>进行特征的动态匹配；最后用f<sub>mc</sub>根据query feature与support feature之间的相似性输出confidence score.</p>
+<h5 id="2-DMF-Dynamic-Meta-filter-for-Adaptive-Alignment"><a href="#2-DMF-Dynamic-Meta-filter-for-Adaptive-Alignment" class="headerlink" title="2.DMF(Dynamic Meta-filter for Adaptive Alignment)"></a>2.DMF(Dynamic Meta-filter for Adaptive Alignment)</h5><p>关于分组卷积：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/shine-lee/p/10243114.html">Group Convolution分组卷积，以及Depthwise Convolution和Global Depthwise Convolution - shine-lee - 博客园 (cnblogs.com)</a></p>
+<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-4.png" alt="DMF-4"></p>
+<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-5.png" alt="DMF-5"></p>
+<p>对support feature先做一次卷积，卷积核大小为3，输出通道为c x K x K，可以视为图像每个位置的像素对应一个c x K x K大小的张量，再将其视为该位置一个输出通道为c，核大小为K的卷积核。对query feature的每个位置使用对应的卷积核进行group为3的<strong>分组卷积</strong>，与原本的query feature相加得到aligned query feature. </p>
+<p>值得注意：channel wise正是通过分组卷积实现的。每个K x K的卷积核对应于原query maps中的一张query feature。</p>
+<h5 id="3-Dynamic-Sampling"><a href="#3-Dynamic-Sampling" class="headerlink" title="3.Dynamic Sampling"></a>3.Dynamic Sampling</h5><p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-6.png" alt="DMF-6"></p>
+<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-7.png" alt="DMF-7"></p>
+<p>先将support feature与query feature拼接在一起，用核大小为5，通道为9的卷积核进行卷积，生成一张9 x h x w的feature mapM。M的每个位置的9个数值包含生成在位置(i,j)的卷积核的信息。</p>
+<h5 id="4-Adaptive-Alignment"><a href="#4-Adaptive-Alignment" class="headerlink" title="4.Adaptive Alignment"></a>4.Adaptive Alignment</h5><p>重复匹配过程</p>
+<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-8.png" alt="DMF-8"></p>
+<p>F是前面的动态卷积的过程。问题是超参数T的调整，对于FSL，面对不同的任务，超参数T应该不同，所以作者使用了Neural ODE的方法。</p>
+<p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-9.png" alt="DMF-9"></p>
+<h5 id="5-Meta-classifier"><a href="#5-Meta-classifier" class="headerlink" title="5.Meta classifier"></a>5.Meta classifier</h5><p>获取Dynamically aligned query feature后，不需要任何可学习参数生成一个meta-classifier。方法：使用glaobal averge pooling将support feature聚集到一个c x 1 x 1的feature上，将这个c x 1 x 1的张量作为一个卷积滤波器，也即架构中的f<sub>mc</sub>，并运用在aligned上可以得到一个1 x h x w的张量。如果query set中某张图属于category c,则它们对应位置应该有很高数值。</p>
+<h1 id="四、实现细节"><a href="#四、实现细节" class="headerlink" title="四、实现细节"></a>四、实现细节</h1><h5 id="1-损失函数"><a href="#1-损失函数" class="headerlink" title="1.损失函数"></a>1.损失函数</h5><p><img src="/2022/02/13/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-DMF/DMF-10.png" alt="DMF-10"></p>
+<h5 id="2-网络架构"><a href="#2-网络架构" class="headerlink" title="2.网络架构"></a>2.网络架构</h5><p>使用ResNet12去除最后的池化层用于特征提取，feature map</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1043,7 +1144,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
