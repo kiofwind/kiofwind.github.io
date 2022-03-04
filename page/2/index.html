@@ -118,12 +118,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">14</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a>
 
   </li>
   </ul>
@@ -149,6 +149,424 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/Meta-learning%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/13/Meta-learning%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">Meta-learning学习</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-13 10:51:32 / 修改时间：11:05:46" itemprop="dateCreated datePublished" datetime="2022-02-13T10:51:32+08:00">2022-02-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一、与ML的比较"><a href="#一、与ML的比较" class="headerlink" title="一、与ML的比较"></a>一、与ML的比较</h1><p>​        可以从目标、步骤等方面进行比较。</p>
+<p>​        Machine Learning的目的是寻找一个函数解决某个任务，通过一轮轮迭代更新模型参数以达到目的。常规步骤：定义一个含有未知参数的模型、定义模型的损失函数、根据损失函数使用优化器迭代模型。</p>
+<p>​        Meta Learning则是指learning about learning。目的是使机器具有学习的能力，通过在任务A、B、C上的学习，能迅速掌握解决任务D的方法。具体的，根据李宏毅老师的课程：我们相当于要学习到一种Learning algorithm，以分类任务为例，我们可以输入二分类任务，如分类苹果和香蕉、太阳和月亮的任务，通过训练掌握Learning algorithm后可以很快解决猫猫和狗狗的分类问题。也有三个步骤：先决定what is learnable?典型的learnable component有网络框架、初始化参数、学习率等；随后定义损失函数；第三步依旧是优化器优化learnable component。在训练过程中每轮迭代解决一个训练任务，任务具有训练数据与测试数据，在训练数据上训练，损失函数定义在训练任务的测试数据上以评估该任务上训练出模型的好坏。最终meta-learning会在测试任务上进行测试，根据表现判断learnable component是否被学到了。</p>
+<h1 id="二、一些术语"><a href="#二、一些术语" class="headerlink" title="二、一些术语"></a>二、一些术语</h1><p>​        每轮训练的输入是一个training tasks, training tasks的数据分为Support set和Query set，分别用于该任务的训练和测试。一次训练成为一个Episode。</p>
+<h1 id="三、损失函数"><a href="#三、损失函数" class="headerlink" title="三、损失函数"></a>三、损失函数</h1><p><img src="/2022/02/13/Meta-learning%E5%AD%A6%E4%B9%A0/Meta-learning-1.png" alt="Meta-learning-1"></p>
+<p>采用批量数据训练，Machine Learning的Loss是累和一个batch中所有example的预测值与Label之间的误差；</p>
+<p>Meta Learning是一个Batch中所有task上面Loss的累和</p>
+<h1 id="四、Learnable-component"><a href="#四、Learnable-component" class="headerlink" title="四、Learnable component"></a>四、Learnable component</h1><h5 id="1-Learning-to-initialize"><a href="#1-Learning-to-initialize" class="headerlink" title="1.Learning to initialize"></a>1.Learning to initialize</h5><p>经典论文Model-Agnostic Meta-Learning(MAML)</p>
+<p>Reptile: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1803.02999">https://arxiv.org/abs/1803.02999</a></p>
+<p>How to train your MAML?</p>
+<h5 id="2-Optimizer"><a href="#2-Optimizer" class="headerlink" title="2.Optimizer"></a>2.Optimizer</h5><h5 id="3-Network-Architecture-Search-NAS"><a href="#3-Network-Architecture-Search-NAS" class="headerlink" title="3.Network Architecture Search(NAS)"></a>3.Network Architecture Search(NAS)</h5><p>……</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/CG-Raterizing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/13/CG-Raterizing/" class="post-title-link" itemprop="url">CG_Raterizing</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-13 10:30:54 / 修改时间：10:31:15" itemprop="dateCreated datePublished" datetime="2022-02-13T10:30:54+08:00">2022-02-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>如何判断一个点是否在三角形内部？</p>
+<p>做叉积，做三次叉积即可判断</p>
+<p>反走样、可见性</p>
+<p>光栅化后会产生锯齿？如何抗锯齿或反走样？</p>
+<p>Aliasing，我们需要做反走样 Anti-Aliasing</p>
+<p>Jaggies空间、位置采样的问题</p>
+<p>Moire</p>
+<p>Wagon wheel effect</p>
+<p>本质是：信号变化太快以至于采样速度无法跟上</p>
+<p>可以先模糊再光栅化</p>
+<p>傅里叶级数与傅里叶变换</p>
+<p>傅里叶级数用</p>
+<p>图像频率与采样频率</p>
+<p>滤波：滤掉特定频率的波</p>
+<p>傅里叶变换：时域–&gt;&gt;频率</p>
+<p>Filtering == Concolution == Averaging</p>
+<p>卷积定理</p>
+<p>时域上两个信号的卷积等价于频域上两个信号的乘积</p>
+<p>如何做卷积？</p>
+<ul>
+<li>在时域(spatial domain)上直接卷积</li>
+<li>傅里叶变换到频域(frequency domain),在频域上做乘积，再逆傅里叶变换转化会时域</li>
+</ul>
+<p>更大的卷积核对应更小的频域</p>
+<p>Sampling=Repeating Frequency Contents</p>
+<p>冲击函数时域到频域的转换–&gt;&gt;复制原始信号</p>
+<p>如果采样函数频率太低，冲击函数距离不远，信号混叠。</p>
+<p>Reduce Aliasing Error:</p>
+<p>1.提高采样频率</p>
+<p>2.先模糊再采样</p>
+<p>对原始信号先进行处理，减小信号宽度，再以原始的间隔去复制的时候，不再产生信号的混叠</p>
+<p>对每一个像素空间进行卷积求平均</p>
+<p>MSAA:</p>
+<p>Multi-sample anti-aliasing</p>
+<p>将大像素划分为小像素，判断小像素是否再三角形内部。根据小像素在三角形内的覆盖率得到像素值</p>
+<p>但是考虑到成本问题，工业界使用不规则的小像素分布，其中部分小像素还会被相邻区域复用</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/CG-Shading/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/13/CG-Shading/" class="post-title-link" itemprop="url">CG_Shading</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-13 10:29:52 / 修改时间：10:30:23" itemprop="dateCreated datePublished" datetime="2022-02-13T10:29:52+08:00">2022-02-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Visubility可见性问题"><a href="#Visubility可见性问题" class="headerlink" title="Visubility可见性问题"></a>Visubility可见性问题</h1><p>需要解决物体绘制在屏幕上的先后顺序</p>
+<p>Painter’s Algirithm:先绘制远处物体，再逐渐把近处物体堆叠上去遮挡远处的物体</p>
+<p>但是难以解决相互遮挡的问题。因为空间中的遮挡关系不是一个偏序关系，不满足传递性。</p>
+<p>引入深度缓存z-buffer的概念</p>
+<p>转换思路，从对物体排序到对像素排序，每次记录每个像素最浅位置的几何体</p>
+<ul>
+<li>frame buffer stores color values</li>
+<li>depth buffer stores depth</li>
+</ul>
+<p>算法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (each triangle T)</span><br><span class="line">	<span class="keyword">for</span> (each sample (x, y, z) in T)</span><br><span class="line">		<span class="keyword">if</span>(z &lt; zbuffer[x, y])</span><br><span class="line">			framebuffer[x, y] = rgb</span><br><span class="line">			zbuffer[x,y] = z</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="keyword">do</span> nothing</span><br></pre></td></tr></table></figure>
+
+<p>Question:</p>
+<ul>
+<li><p>两个几何体有深度完全相同的点？</p>
+</li>
+<li><p>与MSAA的结合，不是对每个像素做z-buffer而是对每个采样点</p>
+</li>
+<li><p>透明物体不能用z-buffer</p>
+</li>
+</ul>
+<h1 id="About-Shadding"><a href="#About-Shadding" class="headerlink" title="About Shadding"></a>About Shadding</h1><p>定义：        </p>
+<p>​        noun. The darkening or coloring of an illustration or diagram with parallel lines or a block of color.</p>
+<p>​        The process of applying a matetial to an object.</p>
+<p>着色与光照、与材料的关系</p>
+<p>Simple Shading Model(Blin-Phong Reflectance Model)</p>
+<p>Specular highlights, Diffuse reflection, Ambient lighting</p>
+<p>三种光的区别是什么？如何描述？</p>
+<p>考虑一个shading point，假设其邻域是一个极小的平面，从而可以定义</p>
+<ul>
+<li>View direction</li>
+<li>Surface normal</li>
+<li>Light direction</li>
+<li>Suraface parameters….</li>
+</ul>
+<p>需要注意，shading not equals shadow。着色不考虑其他物体的存在，只考虑这个点自己，所以shading具有局部性。</p>
+<p>Diffuse Reflection:</p>
+<p>考虑单位面积接收到的能量，余弦定理易得。</p>
+<p>Light off: 光的能量传播认为以球壳形状传播，光的能量应该与据光源的距离的平方成反比</p>
+<p>能量接收与反射，看到的光是因为物体表面反射光，所以亮度与光的吸收率有关。</p>
+<p>漫反射往四面八方反射的光的强度应该与观测角度无关</p>
+<p>Specular Term：</p>
+<p>观察方向与镜面反射方向相同或接近时，看到高光。</p>
+<p>巧妙的变换：镜面反射方向与观测方向的角度等于法向方向与half vector的角度</p>
+<p>强度是一个指数关系–高光往往只局限于很小的区域</p>
+<p>Ambient Term</p>
+<p>接收环境中的光</p>
+<p>假设：每个点接收的环境光的强度都是相同的。环境光来源是四面八方，与光的源头无关，与观测的角度无关，与shading point的法向无关，所以是一个常数。</p>
+<p>但是上述假设较为粗糙，经过了很大的简化。</p>
+<p>L  = L<sub>a</sub> + L<sub>d</sub> + L<sub>s</sub> </p>
+<p>​    = Ambient Term + Disfussion Term + Specular Term</p>
+<p>但是Blin-Phong模型是一个很简化的模型</p>
+<p>关于Shading Frequencies</p>
+<p>Flat shading.三角形取三个点，确定一个平面，平面内色素值相同</p>
+<p>Gouraud shading:对顶点上取点做shading，内部差值</p>
+<p>Phong shading:对每个像素做shading</p>
+<p>问题：</p>
+<p>逐顶点的法线：用该顶点相邻面法向的平均，是否需要根据相邻面的大小进行加权平均？</p>
+<p>已经知道顶点法线，如何得到内部点平滑的法线方向？</p>
+<p>给顶点差值得到（利用重心公式）</p>
+<h1 id="Graphics-Real-time-Rendering-Pipeline-图形管线"><a href="#Graphics-Real-time-Rendering-Pipeline-图形管线" class="headerlink" title="Graphics(Real-time Rendering) Pipeline(图形管线)"></a>Graphics(Real-time Rendering) Pipeline(图形管线)</h1><p>1.含义：一些列操作，从三维空间中的点到图像</p>
+<p>Input: vertices in 3D space –&gt;&gt; Vertices positioned in screen space –&gt;&gt; Triangles  positioned in screen space –&gt;&gt; Fragments –&gt;&gt; Shaded fragments –&gt;&gt; Output: image</p>
+<p>2.open-GL的shader program example</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">uniform sampler2D myTexture;</span><br><span class="line">uniform vec3 lightDir;</span><br><span class="line">varying vec2 uv;</span><br><span class="line">varying vec3 norm;</span><br><span class="line"></span><br><span class="line">void diffuseShader()</span><br><span class="line">&#123;</span><br><span class="line">	vec3 kd;</span><br><span class="line">	kd = texture2d(myTexture, uv)</span><br><span class="line">	kd *= clamp(dot(-lightDir, norm), 0.0, 1.0);</span><br><span class="line">	gl_FragColor = vec4(kd, 1.0)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Texture-Mapping"><a href="#Texture-Mapping" class="headerlink" title="Texture Mapping"></a>Texture Mapping</h1><p>1.如何定义物体的属性？</p>
+<p>只研究物体表面，3维物体的表面是二维的</p>
+<p>2.纹理映射到uv坐标系</p>
+<h1 id="Barycentric-coordinates"><a href="#Barycentric-coordinates" class="headerlink" title="Barycentric coordinates"></a>Barycentric coordinates</h1><p>为什么需要插值？</p>
+<p>将三角形顶点的性质平滑延拓到内部，比如Texture coordinates, colors, normal vectors, depth</p>
+<p>差值方法是利用重心坐标对三个顶点的属性进行线性加权</p>
+<p>重心坐标的问题：不能保证在投影下重心坐标的不变性，所以重心坐标只适合二维平面的差值而不适合三维空间。所以三维空间中的属性建议先在三维空间中做插值在映射到二维平面</p>
+<h1 id="Applying-Texture"><a href="#Applying-Texture" class="headerlink" title="Applying Texture"></a>Applying Texture</h1><p>利用重心坐标可以计算得到采样点对应的纹理坐标，在uv空间得到颜色</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for each rasterized screen sample(x,y):</span><br><span class="line">	(u,v) = evaluate texture coordinate at(x,y)</span><br><span class="line">	texcolor = texture.sample(u,v)</span><br><span class="line">	set sample&#x27;s color to texcolor</span><br></pre></td></tr></table></figure>
+
+<p>过于简单出现问题：</p>
+<ul>
+<li><p>Texture Magnification.纹理太小，对应的纹理坐标不是整数。</p>
+<p>A picel on a texture – a texel. </p>
+<p>解决办法：</p>
+<p>Nearest,将最邻近的整点texel的像素作为值，但是是一个一个的方块</p>
+<p>Blinear interpolation,根据相邻四个texel的像素值在u方向与v方向进行线性插值。</p>
+<p>Bicubic interpolation,取16个点</p>
+</li>
+<li><p>Texture Magnification.纹理太大，会带来走样的问题</p>
+<p>屏幕上像素在纹理空间覆盖的区域大小不相同，覆盖大的区域的像素值如何获得？能直接用覆盖区域中心的texel的值吗？</p>
+<p>解决方法：</p>
+<p><strong>超采样</strong>：类似的MSAA，增加采样点的数目，对于屏幕上每个像素增加采样点数目，在纹理空间采样。</p>
+<p><strong>或者不采样</strong>：计算纹理空间覆盖区域的平均值。但是如何获取覆盖区域？</p>
+<p>Mipmap: Allowing(fast, approx, square)range queries</p>
+<p>Mipmap由一张图生成很多图，做法类似于2X2的池化，降采样的概念同CV中的图像金字塔。</p>
+<p>如何进行区域查询？对于屏幕上的一个像素，计算与相邻像素在纹理空间的距离，以距离的一半作为在纹理空间上覆盖区域的边长的一半。</p>
+<p>如何利用Mipmap查询区域的像素值？D = log<sub>2</sub>L,寻找对应层上的像素。如果D不是整数怎么办？先利用双线性插值在相邻两层间插值出对应位置的像素值，再在层与层之间做一次插值。</p>
+<p>但是MipMap的问题：出现Overblur,对于远处物体会模糊其细节。</p>
+<p><strong>Anisotropic Filtering</strong>(各向异性滤波):部分解决三线性插值的问题。MipMap做长宽相同的图，Anisotropic Filtering做长宽不同的预计算。</p>
+</li>
+</ul>
+<p>点查询问题与范围查询问题？平均范围与其他范围查询？</p>
+<h1 id="Application-of-textures"><a href="#Application-of-textures" class="headerlink" title="Application of textures"></a>Application of textures</h1><p>Environment Map:</p>
+<p>将四面八方的光记录下来就是Environment Map.</p>
+<p>Spherical Map:</p>
+<p>将环境光记录在球上再展开，但是存在问题：球面产生扭曲–&gt;&gt;cubic map，用立方体记录环境光</p>
+<p>Bump Mapping 凹凸贴图：</p>
+<p>存在问题：自己的阴影不会影响自己的shading</p>
+<p>纹理记录深度信息(如相对深度)，会带来法线方向的改变，从而影响shading</p>
+<ul>
+<li>假设原本表面是一个平面，法线方向是(0,1)</li>
+<li>运用凹凸贴图后，如何计算法线方向？dp = constant * [h(p+1)- h(p)]用差分的方法得到切线方向(1,dp)，最后利用切线方向得到法线方向(-dp, 1)</li>
+<li>3D空间的发现：平面法线(0,0,1)，(u,v,p)–&gt;&gt;计算d<sub>p</sub>/d<sub>u</sub>与d<sub>p</sub>/d<sub>v</sub>,计算得到梯度，最后法线方向(-d<sub>p</sub>/d<sub>u</sub>, -d<sub>p</sub>/d<sub>v</sub>, 1)</li>
+</ul>
+<p>Displacement mapping:</p>
+<p>移动顶点的位置，效果更好，但是要求模型的小三角形足够细。</p>
+<p>3D Procedural Noise + Solid Modeling</p>
+<p>3维纹理，用一个表达式定义一个三维噪声</p>
+<p>Volume Rendering</p>
+<p>记录三维信息</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/CG-Ray-tracing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/13/CG-Ray-tracing/" class="post-title-link" itemprop="url">CG_Ray_tracing</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-13 10:29:04 / 修改时间：10:29:26" itemprop="dateCreated datePublished" datetime="2022-02-13T10:29:04+08:00">2022-02-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Ray-Tracing"><a href="#Ray-Tracing" class="headerlink" title="Ray Tracing"></a>Ray Tracing</h1><p>1.光栅化存在的问题:soft shadows, glossy reflection, Indirect illumination。</p>
+<p>2.Basic ray racing</p>
+<p>Three ideas about light rays；</p>
+<ul>
+<li>Light travels in straight lines</li>
+<li>Light rays do not “collide” with each other if they cross</li>
+<li>Light rays travel from the light sources to the eye(but the physics is invariant under path reversal )(光路可逆)</li>
+</ul>
+<p>3.Ray Casting</p>
+<p>连接人眼与像素，连线与场景内物体相交(只与最近的相交，已经解决了深度测试的问题)，将交点与光源相连，看连线是否被遮挡，得知该点是否会被照亮/是否在阴影中</p>
+<p>4.Recursive(Whitted-Style)Ray Tracing</p>
+<p>连接人眼与像素，连线与场景内最近的物体相交得到交点，考虑在该交点处的无能量损失的反射，以及折射。每个反射点、折射点都与光源进行连线，计算每个点的色素值，最后都加到最开始的像素值(理解光路可逆的含义)。</p>
+<p>考虑能量损失，区分shadow rays、secondary rays等等</p>
+<p>技术问题：</p>
+<p>Ray-Surface Intersection(求光线与物体表面的交点)：</p>
+<p>Ray equation:<br>$$<br>r(t) = o + td<br>$$<br>o是光源起点，d是光线传播方向</p>
+<p>Ray Intersection With Triangle:先光与平面求交，再判断交点是否在三角形内部</p>
+<p>求交点的方程出处：平面法线与平面内任何一条线垂直</p>
+<p>Moller Trumbore Algorithm可以直接写出方法是用重心坐标表示交点</p>
+<p>如何加速ray tracing</p>
+<p>Bounding Volumes:用框将物体包围，所以一条光线如何碰不到包围核，那就更碰不到核内物体。经常使用Axis-Aligned Bounding Box</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -625,14 +1043,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

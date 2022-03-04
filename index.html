@@ -118,12 +118,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">14</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a>
 
   </li>
   </ul>
@@ -153,6 +153,309 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/01/%E6%8A%95%E8%B5%84%E5%AD%A6%E9%98%85%E8%AF%BB%E6%9D%90%E6%96%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/01/%E6%8A%95%E8%B5%84%E5%AD%A6%E9%98%85%E8%AF%BB%E6%9D%90%E6%96%99/" class="post-title-link" itemprop="url">投资学阅读材料</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-01 19:59:40 / 修改时间：20:14:29" itemprop="dateCreated datePublished" datetime="2022-03-01T19:59:40+08:00">2022-03-01</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Lesson-one"><a href="#Lesson-one" class="headerlink" title="Lesson one"></a>Lesson one</h1>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/" class="post-title-link" itemprop="url">论文学习之K-net</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-01 11:48:18" itemprop="dateCreated datePublished" datetime="2022-03-01T11:48:18+08:00">2022-03-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-03-02 14:45:20" itemprop="dateModified" datetime="2022-03-02T14:45:20+08:00">2022-03-02</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一、背景与构想"><a href="#一、背景与构想" class="headerlink" title="一、背景与构想"></a>一、背景与构想</h1><h3 id="1-背景"><a href="#1-背景" class="headerlink" title="1.背景"></a>1.背景</h3><p>三类分割任务：semantic、instance、panoptic segmentations，虽然有潜在的关联性，但此前的解决方案各不相同(specialized).</p>
+<h3 id="2-构想"><a href="#2-构想" class="headerlink" title="2.构想"></a>2.构想</h3><p>作者希望能提供一个统一的架构解决这些segmentation的问题，方法是利用learnable kernels,每个kernel为一个object或stuff生成一个mask。</p>
+<ul>
+<li>首先是一个统一的架构，用于解决联系三类segmentation问题</li>
+<li>随机初始化一系列卷积核，在不同任务中学习不同参数。semantic categories–&gt;&gt;sementic kernels;instance identies–&gt;&gt;instance kernels;sementic kernels+instance kernels可以解决panpotic segmentations</li>
+<li>bipartite matching策略，最终建立起instance和kernel的映射关系；此外可以做到NMS-free和Box-free，有利于实时性。</li>
+</ul>
+<h1 id="二、前人的工作与问题"><a href="#二、前人的工作与问题" class="headerlink" title="二、前人的工作与问题"></a>二、前人的工作与问题</h1><h3 id="1-semantic-segmentation"><a href="#1-semantic-segmentation" class="headerlink" title="1.semantic segmentation"></a>1.semantic segmentation</h3><p>很多研究者将这个视为一个dense classification的问题，很多方法基于FCN。在FCN的基础上，许多研究者研究更好的特征表示方法，通过做dilated convolution、pyramid pooling、context representations、attention mechanisms、transformer来提升性能</p>
+<h3 id="2-Instance-Segmentation"><a href="#2-Instance-Segmentation" class="headerlink" title="2.Instance Segmentation"></a>2.Instance Segmentation</h3><p>两种代表框架：”top-down”与”bottom-up”</p>
+<p>top-down: 先精确探测bounding boxes，再对每个box生成一个mask.</p>
+<p>bottom-up: 先做semantic segmentation再将同物体像素聚合成一个instance</p>
+<p>整体而言,top-down的效果更好，但是两者都存在的问题是：Instance segmentation任务都被分成的两个步骤解决，K-net通过将kernel与预测mask建立对应关系，可以同时做segmentation和instance separation.</p>
+<h3 id="3-Panoptic-Segmantation"><a href="#3-Panoptic-Segmantation" class="headerlink" title="3.Panoptic Segmantation"></a>3.Panoptic Segmantation</h3><p>如何将sementic segmentation与instance segmentation结合在一起地问题。</p>
+<p>可以在实例分割的基础上增加一个语义分割的branch；也可以在语义分割的基础上做pixel grouping</p>
+<p>(待补充)</p>
+<h3 id="4-Dynamic-Kernels"><a href="#4-Dynamic-Kernels" class="headerlink" title="4.Dynamic Kernels"></a>4.Dynamic Kernels</h3><p>很多工作对卷积核的利用都是静态的,agnostic to the inputs。泛化能力不强，之前关于dynamic kernels的研究专注于提升模型的灵活性，增加感受野等。</p>
+<h1 id="三、做法"><a href="#三、做法" class="headerlink" title="三、做法"></a>三、做法</h1><h3 id="1-K-Net"><a href="#1-K-Net" class="headerlink" title="1.K-Net"></a>1.K-Net</h3><p>首先定义’meaningful group’：每张图片对应输出一个meaningful group,在不同的分割任务中有着不同的meaningful group，<strong>可以将meaningful group理解为一个样本空间</strong>。在semantic segmantation中,这个group包含所有可能的class；在instance segmentation中，这个group是一张图片可能包含的instance的集合；在panoptic segmentation中，这个group包含所有objects和stuff。</p>
+<p>同时每张图片对应的meaningful group是一个可数有限集，不妨令group包含的最大元素数是N。K-Net将三类group统一起来，使用N(预定义参数)个kernel，每个kernel对应输出group的一个元素，要么是一个potential instance，要么是一个 semantic class。</p>
+<p>做法：<br>$$<br>feature\ map: F\in R^{B\times C\times H\times W} \<br>N\ kernels: K\in R^{N\times C} \<br>segmentation\ prediction\ M\in R^{B\times N\times H\times W} \<br>M\ =\ \sigma(K\times F)<br>$$<br>输出B张图像，经过深度神经网络生成fearure maps F，再利用N个kernels与F做卷积，经过激活函数输出prediction map M。每一张image，M输出N个group元素，每个group元素是一个HXW的张量</p>
+<p>优势：</p>
+<p>同时做segmantation与instance detection,做法简便且迅速</p>
+<p><strong>但是，如何更新kernel的参数？如何定义loss function?</strong></p>
+<h3 id="2-Group-Aware-Kernels"><a href="#2-Group-Aware-Kernels" class="headerlink" title="2.Group-Aware Kernels"></a>2.Group-Aware Kernels</h3><p>解决参数更新的问题</p>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/1.png" alt="1"></p>
+<p>三个步骤：group feature assembling + adaptive kernel update + kernel interaction</p>
+<p>迭代过程：</p>
+<ul>
+<li>使用prediction map M<sub>i-1</sub>装配得到group feature F<sup>K</sup>,F<sup>K</sup>表征每个group元素的特征与差异性</li>
+<li>使用F<sup>K</sup>更新kernel K<sub>i-1</sub></li>
+<li>kernel相互交互综合建立起图像内容</li>
+<li>使用得到的K<sub>i</sub>做卷积得到prediction map M<sub>i</sub></li>
+</ul>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/2.png" alt="2"></p>
+<p>框架</p>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/3.png" alt="3"></p>
+<p>(具体class predictions与mask predictions是怎么完成的？是耦合在一起，直接通过Kernels得到吗？还是又训练了一个分类器来对Mask做prediction?不对，按照论文思路是同时产生的，直接根据group feature吗？怎么同时产生？)</p>
+<h5 id="2-1-Group-Feature-Assembling"><a href="#2-1-Group-Feature-Assembling" class="headerlink" title="2.1 Group Feature Assembling"></a>2.1 Group Feature Assembling</h5><p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/4.png" alt="4"></p>
+<h5 id="2-2-Adaptive-Feature-Update"><a href="#2-2-Adaptive-Feature-Update" class="headerlink" title="2.2 Adaptive Feature Update"></a>2.2 Adaptive Feature Update</h5><p>prediction Map M的维度是NXHXW，每个Group元素的规模是一张图像的大小，所以可能会不可避免的产生一些噪声。为了减少噪声的影响，使用自适应的kernel更新策略</p>
+<p>首先对F<sup>K</sup>与K<sub>i-1</sub>做element-wise multiplication</p>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/5.png" alt="5"></p>
+<p>两个函数表示线性变换</p>
+<p>随后Head学习到两个门限G<sup>K</sup>和G<sup>F</sup>,并用他们和前面的F<sup>K</sup>与K<sub>i-1</sub>一同更新K</p>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/6.png" alt="6"></p>
+<p>四个函数表示不同的fully connected(FC)layers followed by LayerNorm(LN)，激活函数是Sigmoid</p>
+<p>得到的K用于kernel interaction</p>
+<p>gate functionG<sup>K</sup>和G<sup>F</sup>的角色类似于transformer中的self-attention机制，形式也非常相似。</p>
+<h5 id="2-3-Kernel-Interaction"><a href="#2-3-Kernel-Interaction" class="headerlink" title="2.3 Kernel Interaction"></a>2.3 Kernel Interaction</h5><p>目的是为了使每个kernel能知道其他group的信息</p>
+<p>使用Multi-Head Attention followed  by a Feed-Forward Neural Network,输出就是新的K<sub>i</sub>，并用来生成新的mask prediction M<sub>i</sub></p>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/7.png" alt="7"></p>
+<p>g<sub>i</sub>是FC-LN-ReLU layer followed by an FC layer.</p>
+<p>ki同时也会用于intance segmentation和panoptic segmentation中的类别预测</p>
+<h3 id="3-Training-Instance-Kernels"><a href="#3-Training-Instance-Kernels" class="headerlink" title="3.Training Instance Kernels"></a>3.Training Instance Kernels</h3><h5 id="1-class、instance-number与kernel的匹配问题"><a href="#1-class、instance-number与kernel的匹配问题" class="headerlink" title="1.class、instance number与kernel的匹配问题"></a>1.class、instance number与kernel的匹配问题</h5><p>semantic kernel:固定每个kernel对应的semantic class</p>
+<p>instance kernel:使用bipartite matching作为map策略(<strong>不懂</strong>)</p>
+<h5 id="2-损失函数"><a href="#2-损失函数" class="headerlink" title="2.损失函数"></a>2.损失函数</h5><p>$$<br>L_K = \lambda_{cls}\times L_{cls}+\lambda_{ce}\times L_{ce}+\lambda_{dice}\times L_{dice}<br>$$</p>
+<p>L<sub>cls</sub>由classification产生，L<sub>dice</sub>和L<sub>ce</sub>是分割问题的CrossEntropy loss和Dice Loss。</p>
+<p>作者使用Dice的原因是：当instances只占据图片的很小一部分的时候，交叉熵损失不足以用于处理如此不平衡的学习目标。</p>
+<h5 id="3-Mask-based-Hungarian-Assignment"><a href="#3-Mask-based-Hungarian-Assignment" class="headerlink" title="3.Mask-based Hungarian Assignment"></a>3.Mask-based Hungarian Assignment</h5><p>用于target分配，在predicted instance masks与ground-truth instances之间建立起一一映射。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/28/Mesh-Perameterization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/28/Mesh-Perameterization/" class="post-title-link" itemprop="url">Mesh Perameterization</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-28 18:34:40 / 修改时间：19:13:35" itemprop="dateCreated datePublished" datetime="2022-02-28T18:34:40+08:00">2022-02-28</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.no distortion = conformal + equiareal = isometric</p>
+<p>requires surface to be developable</p>
+<ul>
+<li>planes</li>
+<li>cones</li>
+<li>cylinders</li>
+</ul>
+<p>如何定义畸变？</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/25/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-attention-is-all-you-need/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/25/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-attention-is-all-you-need/" class="post-title-link" itemprop="url">论文学习-attention is all you need</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-25 13:44:41 / 修改时间：15:24:29" itemprop="dateCreated datePublished" datetime="2022-02-25T13:44:41+08:00">2022-02-25</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/24/%E6%8A%95%E8%B5%84%E5%AD%A6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -176,10 +479,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-02-24 13:25:37 / 修改时间：14:39:08" itemprop="dateCreated datePublished" datetime="2022-02-24T13:25:37+08:00">2022-02-24</time>
+              <time title="创建时间：2022-02-24 13:25:37" itemprop="dateCreated datePublished" datetime="2022-02-24T13:25:37+08:00">2022-02-24</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-03-03 13:53:44" itemprop="dateModified" datetime="2022-03-03T13:53:44+08:00">2022-03-03</time>
+              </span>
 
           
 
@@ -243,7 +552,7 @@
 <p>Tips:</p>
 <p>货币市场与资本市场的区别：</p>
 <p>货币市场和资本市场的功能不同，所交易的证券期限、利率和风险也不同。资本市场是长期资金的融通市场，货币市场是短期资金融通市场。货币市场交易的证券期限不超过1年。资本市场是指期限在1年以上的金融资产交易市场。货币市场的主要功能是保持金融资产的流动性，以便随时转换为现金。资本市场的主要功能是进行长期资金的融通。货币市场工具包括短期国债（在英美称为国库券）、可转让存单、商业票据、银行承兑汇票等。资本市场的工具包括<a target="_blank" rel="noopener" href="https://www.dongao.com/wdzt/zjzcgl_gupiao/">股票</a>、公司债券、长期政府债券和银行长期贷款等。资本市场包括银行中长期存贷市场和有价证券市场。与货币市场相比，资本市场交易的证券期限长（超过1年），利率或必要报酬率较高，其风险也较大，具有长期较稳定收入，类似于资本投入。</p>
-
+<h1 id="3月3日"><a href="#3月3日" class="headerlink" title="3月3日"></a>3月3日</h1>
       
     </div>
 
@@ -384,6 +693,13 @@
 
               <time title="创建时间：2022-02-23 09:50:34" itemprop="dateCreated datePublished" datetime="2022-02-23T09:50:34+08:00">2022-02-23</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-03-02 11:20:37" itemprop="dateModified" datetime="2022-03-02T11:20:37+08:00">2022-03-02</time>
+              </span>
 
           
 
@@ -396,7 +712,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <h3 id="1-Google搜索引擎"><a href="#1-Google搜索引擎" class="headerlink" title="1.Google搜索引擎"></a>1.Google搜索引擎</h3><p>随机矩阵</p>
+<p>漏洞：</p>
+<ul>
+<li>悬挂网页破坏随机矩阵的形式；</li>
+<li>有多个属于特征值1的线性无关的特征向量</li>
+</ul>
+<p>不可约矩阵与强联通矩阵</p>
+<p>幂法与Markov链</p>
+
       
     </div>
 
@@ -687,424 +1011,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/Meta-learning%E5%AD%A6%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="chen cong">
-      <meta itemprop="description" content="personal blog of cc">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starC">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/13/Meta-learning%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">Meta-learning学习</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-02-13 10:51:32 / 修改时间：11:05:46" itemprop="dateCreated datePublished" datetime="2022-02-13T10:51:32+08:00">2022-02-13</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="一、与ML的比较"><a href="#一、与ML的比较" class="headerlink" title="一、与ML的比较"></a>一、与ML的比较</h1><p>​        可以从目标、步骤等方面进行比较。</p>
-<p>​        Machine Learning的目的是寻找一个函数解决某个任务，通过一轮轮迭代更新模型参数以达到目的。常规步骤：定义一个含有未知参数的模型、定义模型的损失函数、根据损失函数使用优化器迭代模型。</p>
-<p>​        Meta Learning则是指learning about learning。目的是使机器具有学习的能力，通过在任务A、B、C上的学习，能迅速掌握解决任务D的方法。具体的，根据李宏毅老师的课程：我们相当于要学习到一种Learning algorithm，以分类任务为例，我们可以输入二分类任务，如分类苹果和香蕉、太阳和月亮的任务，通过训练掌握Learning algorithm后可以很快解决猫猫和狗狗的分类问题。也有三个步骤：先决定what is learnable?典型的learnable component有网络框架、初始化参数、学习率等；随后定义损失函数；第三步依旧是优化器优化learnable component。在训练过程中每轮迭代解决一个训练任务，任务具有训练数据与测试数据，在训练数据上训练，损失函数定义在训练任务的测试数据上以评估该任务上训练出模型的好坏。最终meta-learning会在测试任务上进行测试，根据表现判断learnable component是否被学到了。</p>
-<h1 id="二、一些术语"><a href="#二、一些术语" class="headerlink" title="二、一些术语"></a>二、一些术语</h1><p>​        每轮训练的输入是一个training tasks, training tasks的数据分为Support set和Query set，分别用于该任务的训练和测试。一次训练成为一个Episode。</p>
-<h1 id="三、损失函数"><a href="#三、损失函数" class="headerlink" title="三、损失函数"></a>三、损失函数</h1><p><img src="/2022/02/13/Meta-learning%E5%AD%A6%E4%B9%A0/Meta-learning-1.png" alt="Meta-learning-1"></p>
-<p>采用批量数据训练，Machine Learning的Loss是累和一个batch中所有example的预测值与Label之间的误差；</p>
-<p>Meta Learning是一个Batch中所有task上面Loss的累和</p>
-<h1 id="四、Learnable-component"><a href="#四、Learnable-component" class="headerlink" title="四、Learnable component"></a>四、Learnable component</h1><h5 id="1-Learning-to-initialize"><a href="#1-Learning-to-initialize" class="headerlink" title="1.Learning to initialize"></a>1.Learning to initialize</h5><p>经典论文Model-Agnostic Meta-Learning(MAML)</p>
-<p>Reptile: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1803.02999">https://arxiv.org/abs/1803.02999</a></p>
-<p>How to train your MAML?</p>
-<h5 id="2-Optimizer"><a href="#2-Optimizer" class="headerlink" title="2.Optimizer"></a>2.Optimizer</h5><h5 id="3-Network-Architecture-Search-NAS"><a href="#3-Network-Architecture-Search-NAS" class="headerlink" title="3.Network Architecture Search(NAS)"></a>3.Network Architecture Search(NAS)</h5><p>……</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/CG-Raterizing/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="chen cong">
-      <meta itemprop="description" content="personal blog of cc">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starC">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/13/CG-Raterizing/" class="post-title-link" itemprop="url">CG_Raterizing</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-02-13 10:30:54 / 修改时间：10:31:15" itemprop="dateCreated datePublished" datetime="2022-02-13T10:30:54+08:00">2022-02-13</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>如何判断一个点是否在三角形内部？</p>
-<p>做叉积，做三次叉积即可判断</p>
-<p>反走样、可见性</p>
-<p>光栅化后会产生锯齿？如何抗锯齿或反走样？</p>
-<p>Aliasing，我们需要做反走样 Anti-Aliasing</p>
-<p>Jaggies空间、位置采样的问题</p>
-<p>Moire</p>
-<p>Wagon wheel effect</p>
-<p>本质是：信号变化太快以至于采样速度无法跟上</p>
-<p>可以先模糊再光栅化</p>
-<p>傅里叶级数与傅里叶变换</p>
-<p>傅里叶级数用</p>
-<p>图像频率与采样频率</p>
-<p>滤波：滤掉特定频率的波</p>
-<p>傅里叶变换：时域–&gt;&gt;频率</p>
-<p>Filtering == Concolution == Averaging</p>
-<p>卷积定理</p>
-<p>时域上两个信号的卷积等价于频域上两个信号的乘积</p>
-<p>如何做卷积？</p>
-<ul>
-<li>在时域(spatial domain)上直接卷积</li>
-<li>傅里叶变换到频域(frequency domain),在频域上做乘积，再逆傅里叶变换转化会时域</li>
-</ul>
-<p>更大的卷积核对应更小的频域</p>
-<p>Sampling=Repeating Frequency Contents</p>
-<p>冲击函数时域到频域的转换–&gt;&gt;复制原始信号</p>
-<p>如果采样函数频率太低，冲击函数距离不远，信号混叠。</p>
-<p>Reduce Aliasing Error:</p>
-<p>1.提高采样频率</p>
-<p>2.先模糊再采样</p>
-<p>对原始信号先进行处理，减小信号宽度，再以原始的间隔去复制的时候，不再产生信号的混叠</p>
-<p>对每一个像素空间进行卷积求平均</p>
-<p>MSAA:</p>
-<p>Multi-sample anti-aliasing</p>
-<p>将大像素划分为小像素，判断小像素是否再三角形内部。根据小像素在三角形内的覆盖率得到像素值</p>
-<p>但是考虑到成本问题，工业界使用不规则的小像素分布，其中部分小像素还会被相邻区域复用</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/CG-Shading/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="chen cong">
-      <meta itemprop="description" content="personal blog of cc">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starC">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/13/CG-Shading/" class="post-title-link" itemprop="url">CG_Shading</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-02-13 10:29:52 / 修改时间：10:30:23" itemprop="dateCreated datePublished" datetime="2022-02-13T10:29:52+08:00">2022-02-13</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Visubility可见性问题"><a href="#Visubility可见性问题" class="headerlink" title="Visubility可见性问题"></a>Visubility可见性问题</h1><p>需要解决物体绘制在屏幕上的先后顺序</p>
-<p>Painter’s Algirithm:先绘制远处物体，再逐渐把近处物体堆叠上去遮挡远处的物体</p>
-<p>但是难以解决相互遮挡的问题。因为空间中的遮挡关系不是一个偏序关系，不满足传递性。</p>
-<p>引入深度缓存z-buffer的概念</p>
-<p>转换思路，从对物体排序到对像素排序，每次记录每个像素最浅位置的几何体</p>
-<ul>
-<li>frame buffer stores color values</li>
-<li>depth buffer stores depth</li>
-</ul>
-<p>算法：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (each triangle T)</span><br><span class="line">	<span class="keyword">for</span> (each sample (x, y, z) in T)</span><br><span class="line">		<span class="keyword">if</span>(z &lt; zbuffer[x, y])</span><br><span class="line">			framebuffer[x, y] = rgb</span><br><span class="line">			zbuffer[x,y] = z</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="keyword">do</span> nothing</span><br></pre></td></tr></table></figure>
-
-<p>Question:</p>
-<ul>
-<li><p>两个几何体有深度完全相同的点？</p>
-</li>
-<li><p>与MSAA的结合，不是对每个像素做z-buffer而是对每个采样点</p>
-</li>
-<li><p>透明物体不能用z-buffer</p>
-</li>
-</ul>
-<h1 id="About-Shadding"><a href="#About-Shadding" class="headerlink" title="About Shadding"></a>About Shadding</h1><p>定义：        </p>
-<p>​        noun. The darkening or coloring of an illustration or diagram with parallel lines or a block of color.</p>
-<p>​        The process of applying a matetial to an object.</p>
-<p>着色与光照、与材料的关系</p>
-<p>Simple Shading Model(Blin-Phong Reflectance Model)</p>
-<p>Specular highlights, Diffuse reflection, Ambient lighting</p>
-<p>三种光的区别是什么？如何描述？</p>
-<p>考虑一个shading point，假设其邻域是一个极小的平面，从而可以定义</p>
-<ul>
-<li>View direction</li>
-<li>Surface normal</li>
-<li>Light direction</li>
-<li>Suraface parameters….</li>
-</ul>
-<p>需要注意，shading not equals shadow。着色不考虑其他物体的存在，只考虑这个点自己，所以shading具有局部性。</p>
-<p>Diffuse Reflection:</p>
-<p>考虑单位面积接收到的能量，余弦定理易得。</p>
-<p>Light off: 光的能量传播认为以球壳形状传播，光的能量应该与据光源的距离的平方成反比</p>
-<p>能量接收与反射，看到的光是因为物体表面反射光，所以亮度与光的吸收率有关。</p>
-<p>漫反射往四面八方反射的光的强度应该与观测角度无关</p>
-<p>Specular Term：</p>
-<p>观察方向与镜面反射方向相同或接近时，看到高光。</p>
-<p>巧妙的变换：镜面反射方向与观测方向的角度等于法向方向与half vector的角度</p>
-<p>强度是一个指数关系–高光往往只局限于很小的区域</p>
-<p>Ambient Term</p>
-<p>接收环境中的光</p>
-<p>假设：每个点接收的环境光的强度都是相同的。环境光来源是四面八方，与光的源头无关，与观测的角度无关，与shading point的法向无关，所以是一个常数。</p>
-<p>但是上述假设较为粗糙，经过了很大的简化。</p>
-<p>L  = L<sub>a</sub> + L<sub>d</sub> + L<sub>s</sub> </p>
-<p>​    = Ambient Term + Disfussion Term + Specular Term</p>
-<p>但是Blin-Phong模型是一个很简化的模型</p>
-<p>关于Shading Frequencies</p>
-<p>Flat shading.三角形取三个点，确定一个平面，平面内色素值相同</p>
-<p>Gouraud shading:对顶点上取点做shading，内部差值</p>
-<p>Phong shading:对每个像素做shading</p>
-<p>问题：</p>
-<p>逐顶点的法线：用该顶点相邻面法向的平均，是否需要根据相邻面的大小进行加权平均？</p>
-<p>已经知道顶点法线，如何得到内部点平滑的法线方向？</p>
-<p>给顶点差值得到（利用重心公式）</p>
-<h1 id="Graphics-Real-time-Rendering-Pipeline-图形管线"><a href="#Graphics-Real-time-Rendering-Pipeline-图形管线" class="headerlink" title="Graphics(Real-time Rendering) Pipeline(图形管线)"></a>Graphics(Real-time Rendering) Pipeline(图形管线)</h1><p>1.含义：一些列操作，从三维空间中的点到图像</p>
-<p>Input: vertices in 3D space –&gt;&gt; Vertices positioned in screen space –&gt;&gt; Triangles  positioned in screen space –&gt;&gt; Fragments –&gt;&gt; Shaded fragments –&gt;&gt; Output: image</p>
-<p>2.open-GL的shader program example</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">uniform sampler2D myTexture;</span><br><span class="line">uniform vec3 lightDir;</span><br><span class="line">varying vec2 uv;</span><br><span class="line">varying vec3 norm;</span><br><span class="line"></span><br><span class="line">void diffuseShader()</span><br><span class="line">&#123;</span><br><span class="line">	vec3 kd;</span><br><span class="line">	kd = texture2d(myTexture, uv)</span><br><span class="line">	kd *= clamp(dot(-lightDir, norm), 0.0, 1.0);</span><br><span class="line">	gl_FragColor = vec4(kd, 1.0)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="Texture-Mapping"><a href="#Texture-Mapping" class="headerlink" title="Texture Mapping"></a>Texture Mapping</h1><p>1.如何定义物体的属性？</p>
-<p>只研究物体表面，3维物体的表面是二维的</p>
-<p>2.纹理映射到uv坐标系</p>
-<h1 id="Barycentric-coordinates"><a href="#Barycentric-coordinates" class="headerlink" title="Barycentric coordinates"></a>Barycentric coordinates</h1><p>为什么需要插值？</p>
-<p>将三角形顶点的性质平滑延拓到内部，比如Texture coordinates, colors, normal vectors, depth</p>
-<p>差值方法是利用重心坐标对三个顶点的属性进行线性加权</p>
-<p>重心坐标的问题：不能保证在投影下重心坐标的不变性，所以重心坐标只适合二维平面的差值而不适合三维空间。所以三维空间中的属性建议先在三维空间中做插值在映射到二维平面</p>
-<h1 id="Applying-Texture"><a href="#Applying-Texture" class="headerlink" title="Applying Texture"></a>Applying Texture</h1><p>利用重心坐标可以计算得到采样点对应的纹理坐标，在uv空间得到颜色</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for each rasterized screen sample(x,y):</span><br><span class="line">	(u,v) = evaluate texture coordinate at(x,y)</span><br><span class="line">	texcolor = texture.sample(u,v)</span><br><span class="line">	set sample&#x27;s color to texcolor</span><br></pre></td></tr></table></figure>
-
-<p>过于简单出现问题：</p>
-<ul>
-<li><p>Texture Magnification.纹理太小，对应的纹理坐标不是整数。</p>
-<p>A picel on a texture – a texel. </p>
-<p>解决办法：</p>
-<p>Nearest,将最邻近的整点texel的像素作为值，但是是一个一个的方块</p>
-<p>Blinear interpolation,根据相邻四个texel的像素值在u方向与v方向进行线性插值。</p>
-<p>Bicubic interpolation,取16个点</p>
-</li>
-<li><p>Texture Magnification.纹理太大，会带来走样的问题</p>
-<p>屏幕上像素在纹理空间覆盖的区域大小不相同，覆盖大的区域的像素值如何获得？能直接用覆盖区域中心的texel的值吗？</p>
-<p>解决方法：</p>
-<p><strong>超采样</strong>：类似的MSAA，增加采样点的数目，对于屏幕上每个像素增加采样点数目，在纹理空间采样。</p>
-<p><strong>或者不采样</strong>：计算纹理空间覆盖区域的平均值。但是如何获取覆盖区域？</p>
-<p>Mipmap: Allowing(fast, approx, square)range queries</p>
-<p>Mipmap由一张图生成很多图，做法类似于2X2的池化，降采样的概念同CV中的图像金字塔。</p>
-<p>如何进行区域查询？对于屏幕上的一个像素，计算与相邻像素在纹理空间的距离，以距离的一半作为在纹理空间上覆盖区域的边长的一半。</p>
-<p>如何利用Mipmap查询区域的像素值？D = log<sub>2</sub>L,寻找对应层上的像素。如果D不是整数怎么办？先利用双线性插值在相邻两层间插值出对应位置的像素值，再在层与层之间做一次插值。</p>
-<p>但是MipMap的问题：出现Overblur,对于远处物体会模糊其细节。</p>
-<p><strong>Anisotropic Filtering</strong>(各向异性滤波):部分解决三线性插值的问题。MipMap做长宽相同的图，Anisotropic Filtering做长宽不同的预计算。</p>
-</li>
-</ul>
-<p>点查询问题与范围查询问题？平均范围与其他范围查询？</p>
-<h1 id="Application-of-textures"><a href="#Application-of-textures" class="headerlink" title="Application of textures"></a>Application of textures</h1><p>Environment Map:</p>
-<p>将四面八方的光记录下来就是Environment Map.</p>
-<p>Spherical Map:</p>
-<p>将环境光记录在球上再展开，但是存在问题：球面产生扭曲–&gt;&gt;cubic map，用立方体记录环境光</p>
-<p>Bump Mapping 凹凸贴图：</p>
-<p>存在问题：自己的阴影不会影响自己的shading</p>
-<p>纹理记录深度信息(如相对深度)，会带来法线方向的改变，从而影响shading</p>
-<ul>
-<li>假设原本表面是一个平面，法线方向是(0,1)</li>
-<li>运用凹凸贴图后，如何计算法线方向？dp = constant * [h(p+1)- h(p)]用差分的方法得到切线方向(1,dp)，最后利用切线方向得到法线方向(-dp, 1)</li>
-<li>3D空间的发现：平面法线(0,0,1)，(u,v,p)–&gt;&gt;计算d<sub>p</sub>/d<sub>u</sub>与d<sub>p</sub>/d<sub>v</sub>,计算得到梯度，最后法线方向(-d<sub>p</sub>/d<sub>u</sub>, -d<sub>p</sub>/d<sub>v</sub>, 1)</li>
-</ul>
-<p>Displacement mapping:</p>
-<p>移动顶点的位置，效果更好，但是要求模型的小三角形足够细。</p>
-<p>3D Procedural Noise + Solid Modeling</p>
-<p>3维纹理，用一个表达式定义一个三维噪声</p>
-<p>Volume Rendering</p>
-<p>记录三维信息</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/CG-Ray-tracing/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="chen cong">
-      <meta itemprop="description" content="personal blog of cc">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starC">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/13/CG-Ray-tracing/" class="post-title-link" itemprop="url">CG_Ray_tracing</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-02-13 10:29:04 / 修改时间：10:29:26" itemprop="dateCreated datePublished" datetime="2022-02-13T10:29:04+08:00">2022-02-13</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Ray-Tracing"><a href="#Ray-Tracing" class="headerlink" title="Ray Tracing"></a>Ray Tracing</h1><p>1.光栅化存在的问题:soft shadows, glossy reflection, Indirect illumination。</p>
-<p>2.Basic ray racing</p>
-<p>Three ideas about light rays；</p>
-<ul>
-<li>Light travels in straight lines</li>
-<li>Light rays do not “collide” with each other if they cross</li>
-<li>Light rays travel from the light sources to the eye(but the physics is invariant under path reversal )(光路可逆)</li>
-</ul>
-<p>3.Ray Casting</p>
-<p>连接人眼与像素，连线与场景内物体相交(只与最近的相交，已经解决了深度测试的问题)，将交点与光源相连，看连线是否被遮挡，得知该点是否会被照亮/是否在阴影中</p>
-<p>4.Recursive(Whitted-Style)Ray Tracing</p>
-<p>连接人眼与像素，连线与场景内最近的物体相交得到交点，考虑在该交点处的无能量损失的反射，以及折射。每个反射点、折射点都与光源进行连线，计算每个点的色素值，最后都加到最开始的像素值(理解光路可逆的含义)。</p>
-<p>考虑能量损失，区分shadow rays、secondary rays等等</p>
-<p>技术问题：</p>
-<p>Ray-Surface Intersection(求光线与物体表面的交点)：</p>
-<p>Ray equation:<br>$$<br>r(t) = o + td<br>$$<br>o是光源起点，d是光线传播方向</p>
-<p>Ray Intersection With Triangle:先光与平面求交，再判断交点是否在三角形内部</p>
-<p>求交点的方程出处：平面法线与平面内任何一条线垂直</p>
-<p>Moller Trumbore Algorithm可以直接写出方法是用重心坐标表示交点</p>
-<p>如何加速ray tracing</p>
-<p>Bounding Volumes:用框将物体包围，所以一条光线如何碰不到包围核，那就更碰不到核内物体。经常使用Axis-Aligned Bounding Box</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1179,14 +1085,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

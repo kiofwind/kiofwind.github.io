@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、背景与构想1.背景三类分割任务：semantic、instance、panoptic segmentations，虽然有潜在的关联性，但此前的解决方案各不相同(specialized). 2.构想作者希望能提供一个统一的架构解决这些segmentation的问题，方法是利用learnable kernels,每个kernel为一个object或stuff生成一个mask。  首先是一个统一的架">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文学习之K-net">
+<meta property="og:url" content="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/index.html">
+<meta property="og:site_name" content="starC">
+<meta property="og:description" content="一、背景与构想1.背景三类分割任务：semantic、instance、panoptic segmentations，虽然有潜在的关联性，但此前的解决方案各不相同(specialized). 2.构想作者希望能提供一个统一的架构解决这些segmentation的问题，方法是利用learnable kernels,每个kernel为一个object或stuff生成一个mask。  首先是一个统一的架">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/1.png">
+<meta property="og:image" content="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/2.png">
+<meta property="og:image" content="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/3.png">
+<meta property="og:image" content="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/4.png">
+<meta property="og:image" content="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/5.png">
+<meta property="og:image" content="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/6.png">
+<meta property="og:image" content="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/7.png">
+<meta property="article:published_time" content="2022-03-01T03:48:18.000Z">
+<meta property="article:modified_time" content="2022-03-02T06:45:20.344Z">
+<meta property="article:author" content="chen cong">
+<meta property="article:tag" content="论文学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/1.png">
+
+<link rel="canonical" href="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>论文学习之K-net | starC</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">starC</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一路同行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          论文学习之K-net
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-01 11:48:18" itemprop="dateCreated datePublished" datetime="2022-03-01T11:48:18+08:00">2022-03-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-03-02 14:45:20" itemprop="dateModified" datetime="2022-03-02T14:45:20+08:00">2022-03-02</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、背景与构想"><a href="#一、背景与构想" class="headerlink" title="一、背景与构想"></a>一、背景与构想</h1><h3 id="1-背景"><a href="#1-背景" class="headerlink" title="1.背景"></a>1.背景</h3><p>三类分割任务：semantic、instance、panoptic segmentations，虽然有潜在的关联性，但此前的解决方案各不相同(specialized).</p>
+<h3 id="2-构想"><a href="#2-构想" class="headerlink" title="2.构想"></a>2.构想</h3><p>作者希望能提供一个统一的架构解决这些segmentation的问题，方法是利用learnable kernels,每个kernel为一个object或stuff生成一个mask。</p>
+<ul>
+<li>首先是一个统一的架构，用于解决联系三类segmentation问题</li>
+<li>随机初始化一系列卷积核，在不同任务中学习不同参数。semantic categories–&gt;&gt;sementic kernels;instance identies–&gt;&gt;instance kernels;sementic kernels+instance kernels可以解决panpotic segmentations</li>
+<li>bipartite matching策略，最终建立起instance和kernel的映射关系；此外可以做到NMS-free和Box-free，有利于实时性。</li>
+</ul>
+<h1 id="二、前人的工作与问题"><a href="#二、前人的工作与问题" class="headerlink" title="二、前人的工作与问题"></a>二、前人的工作与问题</h1><h3 id="1-semantic-segmentation"><a href="#1-semantic-segmentation" class="headerlink" title="1.semantic segmentation"></a>1.semantic segmentation</h3><p>很多研究者将这个视为一个dense classification的问题，很多方法基于FCN。在FCN的基础上，许多研究者研究更好的特征表示方法，通过做dilated convolution、pyramid pooling、context representations、attention mechanisms、transformer来提升性能</p>
+<h3 id="2-Instance-Segmentation"><a href="#2-Instance-Segmentation" class="headerlink" title="2.Instance Segmentation"></a>2.Instance Segmentation</h3><p>两种代表框架：”top-down”与”bottom-up”</p>
+<p>top-down: 先精确探测bounding boxes，再对每个box生成一个mask.</p>
+<p>bottom-up: 先做semantic segmentation再将同物体像素聚合成一个instance</p>
+<p>整体而言,top-down的效果更好，但是两者都存在的问题是：Instance segmentation任务都被分成的两个步骤解决，K-net通过将kernel与预测mask建立对应关系，可以同时做segmentation和instance separation.</p>
+<h3 id="3-Panoptic-Segmantation"><a href="#3-Panoptic-Segmantation" class="headerlink" title="3.Panoptic Segmantation"></a>3.Panoptic Segmantation</h3><p>如何将sementic segmentation与instance segmentation结合在一起地问题。</p>
+<p>可以在实例分割的基础上增加一个语义分割的branch；也可以在语义分割的基础上做pixel grouping</p>
+<p>(待补充)</p>
+<h3 id="4-Dynamic-Kernels"><a href="#4-Dynamic-Kernels" class="headerlink" title="4.Dynamic Kernels"></a>4.Dynamic Kernels</h3><p>很多工作对卷积核的利用都是静态的,agnostic to the inputs。泛化能力不强，之前关于dynamic kernels的研究专注于提升模型的灵活性，增加感受野等。</p>
+<h1 id="三、做法"><a href="#三、做法" class="headerlink" title="三、做法"></a>三、做法</h1><h3 id="1-K-Net"><a href="#1-K-Net" class="headerlink" title="1.K-Net"></a>1.K-Net</h3><p>首先定义’meaningful group’：每张图片对应输出一个meaningful group,在不同的分割任务中有着不同的meaningful group，<strong>可以将meaningful group理解为一个样本空间</strong>。在semantic segmantation中,这个group包含所有可能的class；在instance segmentation中，这个group是一张图片可能包含的instance的集合；在panoptic segmentation中，这个group包含所有objects和stuff。</p>
+<p>同时每张图片对应的meaningful group是一个可数有限集，不妨令group包含的最大元素数是N。K-Net将三类group统一起来，使用N(预定义参数)个kernel，每个kernel对应输出group的一个元素，要么是一个potential instance，要么是一个 semantic class。</p>
+<p>做法：<br>$$<br>feature\ map: F\in R^{B\times C\times H\times W} \<br>N\ kernels: K\in R^{N\times C} \<br>segmentation\ prediction\ M\in R^{B\times N\times H\times W} \<br>M\ =\ \sigma(K\times F)<br>$$<br>输出B张图像，经过深度神经网络生成fearure maps F，再利用N个kernels与F做卷积，经过激活函数输出prediction map M。每一张image，M输出N个group元素，每个group元素是一个HXW的张量</p>
+<p>优势：</p>
+<p>同时做segmantation与instance detection,做法简便且迅速</p>
+<p><strong>但是，如何更新kernel的参数？如何定义loss function?</strong></p>
+<h3 id="2-Group-Aware-Kernels"><a href="#2-Group-Aware-Kernels" class="headerlink" title="2.Group-Aware Kernels"></a>2.Group-Aware Kernels</h3><p>解决参数更新的问题</p>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/1.png" alt="1"></p>
+<p>三个步骤：group feature assembling + adaptive kernel update + kernel interaction</p>
+<p>迭代过程：</p>
+<ul>
+<li>使用prediction map M<sub>i-1</sub>装配得到group feature F<sup>K</sup>,F<sup>K</sup>表征每个group元素的特征与差异性</li>
+<li>使用F<sup>K</sup>更新kernel K<sub>i-1</sub></li>
+<li>kernel相互交互综合建立起图像内容</li>
+<li>使用得到的K<sub>i</sub>做卷积得到prediction map M<sub>i</sub></li>
+</ul>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/2.png" alt="2"></p>
+<p>框架</p>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/3.png" alt="3"></p>
+<p>(具体class predictions与mask predictions是怎么完成的？是耦合在一起，直接通过Kernels得到吗？还是又训练了一个分类器来对Mask做prediction?不对，按照论文思路是同时产生的，直接根据group feature吗？怎么同时产生？)</p>
+<h5 id="2-1-Group-Feature-Assembling"><a href="#2-1-Group-Feature-Assembling" class="headerlink" title="2.1 Group Feature Assembling"></a>2.1 Group Feature Assembling</h5><p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/4.png" alt="4"></p>
+<h5 id="2-2-Adaptive-Feature-Update"><a href="#2-2-Adaptive-Feature-Update" class="headerlink" title="2.2 Adaptive Feature Update"></a>2.2 Adaptive Feature Update</h5><p>prediction Map M的维度是NXHXW，每个Group元素的规模是一张图像的大小，所以可能会不可避免的产生一些噪声。为了减少噪声的影响，使用自适应的kernel更新策略</p>
+<p>首先对F<sup>K</sup>与K<sub>i-1</sub>做element-wise multiplication</p>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/5.png" alt="5"></p>
+<p>两个函数表示线性变换</p>
+<p>随后Head学习到两个门限G<sup>K</sup>和G<sup>F</sup>,并用他们和前面的F<sup>K</sup>与K<sub>i-1</sub>一同更新K</p>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/6.png" alt="6"></p>
+<p>四个函数表示不同的fully connected(FC)layers followed by LayerNorm(LN)，激活函数是Sigmoid</p>
+<p>得到的K用于kernel interaction</p>
+<p>gate functionG<sup>K</sup>和G<sup>F</sup>的角色类似于transformer中的self-attention机制，形式也非常相似。</p>
+<h5 id="2-3-Kernel-Interaction"><a href="#2-3-Kernel-Interaction" class="headerlink" title="2.3 Kernel Interaction"></a>2.3 Kernel Interaction</h5><p>目的是为了使每个kernel能知道其他group的信息</p>
+<p>使用Multi-Head Attention followed  by a Feed-Forward Neural Network,输出就是新的K<sub>i</sub>，并用来生成新的mask prediction M<sub>i</sub></p>
+<p><img src="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/7.png" alt="7"></p>
+<p>g<sub>i</sub>是FC-LN-ReLU layer followed by an FC layer.</p>
+<p>ki同时也会用于intance segmentation和panoptic segmentation中的类别预测</p>
+<h3 id="3-Training-Instance-Kernels"><a href="#3-Training-Instance-Kernels" class="headerlink" title="3.Training Instance Kernels"></a>3.Training Instance Kernels</h3><h5 id="1-class、instance-number与kernel的匹配问题"><a href="#1-class、instance-number与kernel的匹配问题" class="headerlink" title="1.class、instance number与kernel的匹配问题"></a>1.class、instance number与kernel的匹配问题</h5><p>semantic kernel:固定每个kernel对应的semantic class</p>
+<p>instance kernel:使用bipartite matching作为map策略(<strong>不懂</strong>)</p>
+<h5 id="2-损失函数"><a href="#2-损失函数" class="headerlink" title="2.损失函数"></a>2.损失函数</h5><p>$$<br>L_K = \lambda_{cls}\times L_{cls}+\lambda_{ce}\times L_{ce}+\lambda_{dice}\times L_{dice}<br>$$</p>
+<p>L<sub>cls</sub>由classification产生，L<sub>dice</sub>和L<sub>ce</sub>是分割问题的CrossEntropy loss和Dice Loss。</p>
+<p>作者使用Dice的原因是：当instances只占据图片的很小一部分的时候，交叉熵损失不足以用于处理如此不平衡的学习目标。</p>
+<h5 id="3-Mask-based-Hungarian-Assignment"><a href="#3-Mask-based-Hungarian-Assignment" class="headerlink" title="3.Mask-based Hungarian Assignment"></a>3.Mask-based Hungarian Assignment</h5><p>用于target分配，在predicted instance masks与ground-truth instances之间建立起一一映射。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" rel="tag"># 论文学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/28/Mesh-Perameterization/" rel="prev" title="Mesh Perameterization">
+      <i class="fa fa-chevron-left"></i> Mesh Perameterization
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/03/01/%E6%8A%95%E8%B5%84%E5%AD%A6%E9%98%85%E8%AF%BB%E6%9D%90%E6%96%99/" rel="next" title="投资学阅读材料">
+      投资学阅读材料 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%83%8C%E6%99%AF%E4%B8%8E%E6%9E%84%E6%83%B3"><span class="nav-number">1.</span> <span class="nav-text">一、背景与构想</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%83%8C%E6%99%AF"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%9E%84%E6%83%B3"><span class="nav-number">1.0.2.</span> <span class="nav-text">2.构想</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%89%8D%E4%BA%BA%E7%9A%84%E5%B7%A5%E4%BD%9C%E4%B8%8E%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">二、前人的工作与问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-semantic-segmentation"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.semantic segmentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Instance-Segmentation"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.Instance Segmentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Panoptic-Segmantation"><span class="nav-number">2.0.3.</span> <span class="nav-text">3.Panoptic Segmantation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Dynamic-Kernels"><span class="nav-number">2.0.4.</span> <span class="nav-text">4.Dynamic Kernels</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%81%9A%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">三、做法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-K-Net"><span class="nav-number">3.0.1.</span> <span class="nav-text">1.K-Net</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Group-Aware-Kernels"><span class="nav-number">3.0.2.</span> <span class="nav-text">2.Group-Aware Kernels</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-Group-Feature-Assembling"><span class="nav-number">3.0.2.0.1.</span> <span class="nav-text">2.1 Group Feature Assembling</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-Adaptive-Feature-Update"><span class="nav-number">3.0.2.0.2.</span> <span class="nav-text">2.2 Adaptive Feature Update</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-Kernel-Interaction"><span class="nav-number">3.0.2.0.3.</span> <span class="nav-text">2.3 Kernel Interaction</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Training-Instance-Kernels"><span class="nav-number">3.0.3.</span> <span class="nav-text">3.Training Instance Kernels</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-class%E3%80%81instance-number%E4%B8%8Ekernel%E7%9A%84%E5%8C%B9%E9%85%8D%E9%97%AE%E9%A2%98"><span class="nav-number">3.0.3.0.1.</span> <span class="nav-text">1.class、instance number与kernel的匹配问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.0.3.0.2.</span> <span class="nav-text">2.损失函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-Mask-based-Hungarian-Assignment"><span class="nav-number">3.0.3.0.3.</span> <span class="nav-text">3.Mask-based Hungarian Assignment</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="chen cong"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">chen cong</p>
+  <div class="site-description" itemprop="description">personal blog of cc</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        <div id="music163player">
+        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=86 src="//music.163.com/outchain/player?type=2&id=1459343252&auto=1&height=66"></iframe>
+        </iframe>
+      </div>
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈聪</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="GeometryImplicit &amp; Explicity Geometry 是两种几何表述方法Implicit Geometry: Points satisfy specified reationship. x^2+y^2+Z^2&#x3D;1 对于判断点在不在面上较为简单，但举出所有在免上的点，绘制出几何形体比较难 Explicit Geometry:  直接给出点的坐标或参数映射的方式给出点的坐">
+  <meta name="description" content="1.no distortion &#x3D; conformal + equiareal &#x3D; isometric requires surface to be developable  planes cones cylinders  如何定义畸变？">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CG_Geometry">
-<meta property="og:url" content="http://example.com/2022/02/13/CG-Geometry/index.html">
+<meta property="og:title" content="Mesh Perameterization">
+<meta property="og:url" content="http://example.com/2022/02/28/Mesh-Perameterization/index.html">
 <meta property="og:site_name" content="starC">
-<meta property="og:description" content="GeometryImplicit &amp; Explicity Geometry 是两种几何表述方法Implicit Geometry: Points satisfy specified reationship. x^2+y^2+Z^2&#x3D;1 对于判断点在不在面上较为简单，但举出所有在免上的点，绘制出几何形体比较难 Explicit Geometry:  直接给出点的坐标或参数映射的方式给出点的坐">
+<meta property="og:description" content="1.no distortion &#x3D; conformal + equiareal &#x3D; isometric requires surface to be developable  planes cones cylinders  如何定义畸变？">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-02-13T02:26:49.000Z">
-<meta property="article:modified_time" content="2022-02-13T02:28:45.172Z">
+<meta property="article:published_time" content="2022-02-28T10:34:40.000Z">
+<meta property="article:modified_time" content="2022-02-28T11:13:35.955Z">
 <meta property="article:author" content="chen cong">
 <meta property="article:tag" content="CG">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2022/02/13/CG-Geometry/">
+<link rel="canonical" href="http://example.com/2022/02/28/Mesh-Perameterization/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>CG_Geometry | starC</title>
+  <title>Mesh Perameterization | starC</title>
   
 
 
@@ -157,7 +157,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/13/CG-Geometry/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/28/Mesh-Perameterization/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -170,7 +170,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          CG_Geometry
+          Mesh Perameterization
         </h1>
 
         <div class="post-meta">
@@ -181,7 +181,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-02-13 10:26:49 / 修改时间：10:28:45" itemprop="dateCreated datePublished" datetime="2022-02-13T10:26:49+08:00">2022-02-13</time>
+              <time title="创建时间：2022-02-28 18:34:40 / 修改时间：19:13:35" itemprop="dateCreated datePublished" datetime="2022-02-28T18:34:40+08:00">2022-02-28</time>
             </span>
 
           
@@ -195,49 +195,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Geometry"><a href="#Geometry" class="headerlink" title="Geometry"></a>Geometry</h1><p>Implicit &amp; Explicity Geometry</p>
-<p>是两种几何表述方法Implicit Geometry: Points satisfy specified reationship. x^2+y^2+Z^2=1</p>
-<p>对于判断点在不在面上较为简单，但举出所有在免上的点，绘制出几何形体比较难</p>
-<p>Explicit Geometry:  直接给出点的坐标或参数映射的方式给出点的坐标f: R<sup>2</sup>–&gt;&gt;R<sup>3</sup> ,(u,v)–&gt;&gt;(x,y,z)</p>
-<p>有点和缺点与Implicit Geometry相反</p>
-<p>Constructive Solid Geometry(Implicit)</p>
-<p>利用布尔运算合并implicit geometry,根据简单几何形成复杂几何</p>
-<p>Distance Functions(Implicit)</p>
-<p>根据距离函数而不是布尔运算进行blend</p>
-<p>Distance functions:定义一个点到目标物体上任意点的最小距离</p>
-<p>Point cloud(Explicit)</p>
-<p>Polygon Mesh(Explicit)</p>
-<h1 id="Curves"><a href="#Curves" class="headerlink" title="Curves"></a>Curves</h1><p>1.Bezier Curve</p>
-<p>de Casteljau Algorithm:生成贝塞尔曲线</p>
-<p>用数学语言表述：Bernstein polynomial作为系数对给定点进行加权</p>
-<p>仿射变换下只需要将给定点做仿射变换再生成贝塞尔曲线即可</p>
-<p>贝塞尔曲线在控制点的凸包内</p>
-<p>Piecewaise Bezier Curves,如何将贝塞尔曲线连续？</p>
-<p>C<sup>0</sup>连续，端点相连</p>
-<p>C<sup>1</sup>连续，端点相连，导数相同</p>
-<p>2.B-splines</p>
+        <p>1.no distortion = conformal + equiareal = isometric</p>
+<p>requires surface to be developable</p>
 <ul>
-<li>short for base splines</li>
+<li>planes</li>
+<li>cones</li>
+<li>cylinders</li>
 </ul>
-<p>3.Bezier Surface</p>
-<p>4 X 4 = 16个点</p>
-<p>水平方向每四个点获取四条曲线，竖直方向根据曲线上四个点再拟合贝塞尔曲线</p>
-<p>4.subdivision</p>
-<p>细分图形，不仅是增加三角形的数目，还需要使物体看上去更圆滑</p>
-<p>Loop subdivision:对不同的顶点应用不同的变换</p>
-<p>new point = 1/8X(old points in the line) + 3/8 X (old points vertical perpendicular to the line)</p>
-<p>old point = (1- n X u) X orginal_position + u*neighbor_position_sum</p>
-<p>Catmull-Clark Subdivision(General Mesh)</p>
-<p>物体可能不是用三角形描述的</p>
-<p>首先定义quad face与Non-quad face，还有Extraordinary vertex(奇异点，度不为4)</p>
-<p>取每条边的中点，取每个面的中点</p>
-<p>第一次细分之后增加了非四边形面个奇异点个数，之后不会再增加奇异点个数</p>
-<p>如何调整：将点分为三类：在平面中心的点、边中心的点、原始的顶点</p>
-<p>Mesh Simplification</p>
-<p>Goal:reduce number of mesh elements while maintaining the overall shape</p>
-<p>做法：Collapsing An Edge(边坍缩)，将一条边的两个顶点变成一个点</p>
-<p>但是哪些边需要进行坍缩？使用Quadric Error Metrics(二次误差度量)，将某个点放在某个位置上使其到其原本连接各个面的距离最小。</p>
-<p>如何选边？先为每个边用二次误差度量打个分，每次选最小的边，更新受影响的边(建议使用堆结构)</p>
+<p>如何定义畸变？</p>
 
     </div>
 
@@ -256,12 +221,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/01/22/%E9%87%8F%E5%8C%96%E7%AD%96%E7%95%A5%E6%A8%A1%E4%BB%BF/" rel="prev" title="量化策略模仿">
-      <i class="fa fa-chevron-left"></i> 量化策略模仿
+    <a href="/2022/02/25/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-attention-is-all-you-need/" rel="prev" title="论文学习-attention is all you need">
+      <i class="fa fa-chevron-left"></i> 论文学习-attention is all you need
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/02/13/CG-Ray-tracing/" rel="next" title="CG_Ray_tracing">
-      CG_Ray_tracing <i class="fa fa-chevron-right"></i>
+    <a href="/2022/03/01/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E4%B9%8BK-net/" rel="next" title="论文学习之K-net">
+      论文学习之K-net <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -321,7 +286,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Geometry"><span class="nav-number">1.</span> <span class="nav-text">Geometry</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Curves"><span class="nav-number">2.</span> <span class="nav-text">Curves</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
