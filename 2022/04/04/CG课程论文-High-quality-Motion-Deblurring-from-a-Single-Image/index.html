@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、问题背景1.模糊图片的产生在latent image的基础上，由于相机的抖动相当于一个blur kernel作用在图像上(或point spread function).此外图像的拍摄过程也会存在噪声。同时在估计blur kernel的时候也会产生误差，这些误差在以前的解决方案中被归到image noise中了，是不对的 2.blind or non-blind问题区别在于kernel是已知的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CG课程论文--High-quality Motion Deblurring from a Single Image">
+<meta property="og:url" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/index.html">
+<meta property="og:site_name" content="starC">
+<meta property="og:description" content="一、问题背景1.模糊图片的产生在latent image的基础上，由于相机的抖动相当于一个blur kernel作用在图像上(或point spread function).此外图像的拍摄过程也会存在噪声。同时在估计blur kernel的时候也会产生误差，这些误差在以前的解决方案中被归到image noise中了，是不对的 2.blind or non-blind问题区别在于kernel是已知的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/1.png">
+<meta property="og:image" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/2.png">
+<meta property="og:image" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/3.png">
+<meta property="og:image" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/4.png">
+<meta property="og:image" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/5.png">
+<meta property="og:image" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/6.png">
+<meta property="og:image" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/7.png">
+<meta property="og:image" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/8.png">
+<meta property="og:image" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/9.png">
+<meta property="og:image" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/10.png">
+<meta property="article:published_time" content="2022-04-04T05:47:24.000Z">
+<meta property="article:modified_time" content="2022-04-09T10:57:18.180Z">
+<meta property="article:author" content="chen cong">
+<meta property="article:tag" content="CG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/1.png">
+
+<link rel="canonical" href="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CG课程论文--High-quality Motion Deblurring from a Single Image | starC</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">starC</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一路同行</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">25</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CG课程论文--High-quality Motion Deblurring from a Single Image
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-04 13:47:24" itemprop="dateCreated datePublished" datetime="2022-04-04T13:47:24+08:00">2022-04-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-04-09 18:57:18" itemprop="dateModified" datetime="2022-04-09T18:57:18+08:00">2022-04-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、问题背景"><a href="#一、问题背景" class="headerlink" title="一、问题背景"></a>一、问题背景</h1><h4 id="1-模糊图片的产生"><a href="#1-模糊图片的产生" class="headerlink" title="1.模糊图片的产生"></a>1.模糊图片的产生</h4><p>在latent image的基础上，由于相机的抖动相当于一个blur kernel作用在图像上(或point spread function).此外图像的拍摄过程也会存在噪声。同时在估计blur kernel的时候也会产生误差，这些误差在以前的解决方案中被归到image noise中了，是不对的</p>
+<h4 id="2-blind-or-non-blind问题"><a href="#2-blind-or-non-blind问题" class="headerlink" title="2.blind or non-blind问题"></a>2.blind or non-blind问题</h4><p>区别在于kernel是已知的还是未知的</p>
+<h4 id="3-作者方法的核心："><a href="#3-作者方法的核心：" class="headerlink" title="3.作者方法的核心："></a>3.作者方法的核心：</h4><ul>
+<li>概率模型的构建，合理分析artifact的产生原因，以及各个部分各自的noise。本文认为噪声分布是spatially random distribution</li>
+<li>smoothness constraint</li>
+<li>optimization algorithm</li>
+</ul>
+<h1 id="二、Analysis"><a href="#二、Analysis" class="headerlink" title="二、Analysis"></a>二、Analysis</h1><h4 id="1-理想情况下产生实际的blurred-image"><a href="#1-理想情况下产生实际的blurred-image" class="headerlink" title="1.理想情况下产生实际的blurred image"></a>1.理想情况下产生实际的blurred image</h4><p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/1.png" alt="1"></p>
+<p>I是latent image, f是psf或blur kernel。二者做卷积加上图像噪声生成一幅blurred image</p>
+<p>恢复图像的难点在于ringing artifacts，以前的研究认为这源于Gibbs phenomeno,即傅里叶级数在自然图像不连续阶跃处的误差造成，但作者的研究发现ringing artifacts更可能源于对图像噪声与psf估计中产生的误差的混淆</p>
+<p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/2.png" alt="2"></p>
+<p>如果不能对噪声n合理建模，会容易把在优化过程中产生的对Iatent image和blur kernel的误差归到noise中。而以前对noise往往认为其和其一阶导服从均值为0的高斯分布，这是一个很弱的约束。</p>
+<h1 id="三、Model"><a href="#三、Model" class="headerlink" title="三、Model"></a>三、Model</h1><h4 id="1-概率模型"><a href="#1-概率模型" class="headerlink" title="1.概率模型"></a>1.概率模型</h4><p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/3.png" alt="3"></p>
+<p>右边分别是似然概率**p(I|L,f)**还有概率先验</p>
+<h4 id="2-似然概率"><a href="#2-似然概率" class="headerlink" title="2.似然概率"></a>2.似然概率</h4><p>在已知latent image和psf的条件下估计拍摄到的图片，根据第一个表达式，也相当于在估计噪声。噪声在x于y轴上的偏导用差分替代。高阶微分同理</p>
+<p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/4.png" alt="4"></p>
+<p>认为噪声、噪声的一阶导数、二阶导数符合高斯分布</p>
+<h4 id="3-kernel先验"><a href="#3-kernel先验" class="headerlink" title="3.kernel先验"></a>3.kernel先验</h4><p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/5.png" alt="5"></p>
+<h4 id="4-image先验"><a href="#4-image先验" class="headerlink" title="4.image先验"></a>4.image先验</h4><p>由两部分组成，Global prior和Local prior</p>
+<p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/6.png" alt="6"></p>
+<h5 id="4-1-Global-prior"><a href="#4-1-Global-prior" class="headerlink" title="4.1 Global prior"></a>4.1 Global prior</h5><p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/7.png" alt="7"></p>
+<p>研究图像的自然梯度并进行拟合</p>
+<p>拟合函数：</p>
+<p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/8.png" alt="8"></p>
+<h5 id="4-2-Local-prior"><a href="#4-2-Local-prior" class="headerlink" title="4.2 Local prior"></a>4.2 Local prior</h5><p>为了消除ringing artifacts而引入，基本思想：运动模糊可以被视为平滑滤波过程(smooth filtering process)，在模糊图像局部，像素应该具有constant color</p>
+<p>对于blurred image中的每个像素，生成一个和blur kernel相同大小的local window，计算window内颜色的标准差，如果小于某个阈值则认为该像素在区域内</p>
+<p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/9.png" alt="9"></p>
+<p>sigma1是标准差</p>
+<h1 id="四、Optimization"><a href="#四、Optimization" class="headerlink" title="四、Optimization"></a>四、Optimization</h1><h4 id="1-定义能量函数为似然概率的负对数"><a href="#1-定义能量函数为似然概率的负对数" class="headerlink" title="1.定义能量函数为似然概率的负对数"></a>1.定义能量函数为似然概率的负对数</h4><p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/10.png" alt="10"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/03/Dter3D%E8%AE%BA%E6%96%87%E9%87%8D%E6%96%B0%E9%98%85%E8%AF%BB/" rel="prev" title="Dter3D论文重新阅读">
+      <i class="fa fa-chevron-left"></i> Dter3D论文重新阅读
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E9%97%AE%E9%A2%98%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">一、问题背景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%A8%A1%E7%B3%8A%E5%9B%BE%E7%89%87%E7%9A%84%E4%BA%A7%E7%94%9F"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">1.模糊图片的产生</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-blind-or-non-blind%E9%97%AE%E9%A2%98"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">2.blind or non-blind问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E4%BD%9C%E8%80%85%E6%96%B9%E6%B3%95%E7%9A%84%E6%A0%B8%E5%BF%83%EF%BC%9A"><span class="nav-number">1.0.0.3.</span> <span class="nav-text">3.作者方法的核心：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Analysis"><span class="nav-number">2.</span> <span class="nav-text">二、Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%90%86%E6%83%B3%E6%83%85%E5%86%B5%E4%B8%8B%E4%BA%A7%E7%94%9F%E5%AE%9E%E9%99%85%E7%9A%84blurred-image"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">1.理想情况下产生实际的blurred image</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81Model"><span class="nav-number">3.</span> <span class="nav-text">三、Model</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">1.概率模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BC%BC%E7%84%B6%E6%A6%82%E7%8E%87"><span class="nav-number">3.0.0.2.</span> <span class="nav-text">2.似然概率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-kernel%E5%85%88%E9%AA%8C"><span class="nav-number">3.0.0.3.</span> <span class="nav-text">3.kernel先验</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-image%E5%85%88%E9%AA%8C"><span class="nav-number">3.0.0.4.</span> <span class="nav-text">4.image先验</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-1-Global-prior"><span class="nav-number">3.0.0.4.1.</span> <span class="nav-text">4.1 Global prior</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-Local-prior"><span class="nav-number">3.0.0.4.2.</span> <span class="nav-text">4.2 Local prior</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81Optimization"><span class="nav-number">4.</span> <span class="nav-text">四、Optimization</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%AE%9A%E4%B9%89%E8%83%BD%E9%87%8F%E5%87%BD%E6%95%B0%E4%B8%BA%E4%BC%BC%E7%84%B6%E6%A6%82%E7%8E%87%E7%9A%84%E8%B4%9F%E5%AF%B9%E6%95%B0"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">1.定义能量函数为似然概率的负对数</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="chen cong"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">chen cong</p>
+  <div class="site-description" itemprop="description">personal blog of cc</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        <div id="music163player">
+        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=86 src="//music.163.com/outchain/player?type=2&id=1459343252&auto=1&height=66"></iframe>
+        </iframe>
+      </div>
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈聪</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

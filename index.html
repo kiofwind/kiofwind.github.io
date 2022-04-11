@@ -118,12 +118,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">10</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">13</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">20</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">25</span></a>
 
   </li>
   </ul>
@@ -149,6 +149,350 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/" class="post-title-link" itemprop="url">CG课程论文--High-quality Motion Deblurring from a Single Image</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-04 13:47:24" itemprop="dateCreated datePublished" datetime="2022-04-04T13:47:24+08:00">2022-04-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-04-09 18:57:18" itemprop="dateModified" datetime="2022-04-09T18:57:18+08:00">2022-04-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一、问题背景"><a href="#一、问题背景" class="headerlink" title="一、问题背景"></a>一、问题背景</h1><h4 id="1-模糊图片的产生"><a href="#1-模糊图片的产生" class="headerlink" title="1.模糊图片的产生"></a>1.模糊图片的产生</h4><p>在latent image的基础上，由于相机的抖动相当于一个blur kernel作用在图像上(或point spread function).此外图像的拍摄过程也会存在噪声。同时在估计blur kernel的时候也会产生误差，这些误差在以前的解决方案中被归到image noise中了，是不对的</p>
+<h4 id="2-blind-or-non-blind问题"><a href="#2-blind-or-non-blind问题" class="headerlink" title="2.blind or non-blind问题"></a>2.blind or non-blind问题</h4><p>区别在于kernel是已知的还是未知的</p>
+<h4 id="3-作者方法的核心："><a href="#3-作者方法的核心：" class="headerlink" title="3.作者方法的核心："></a>3.作者方法的核心：</h4><ul>
+<li>概率模型的构建，合理分析artifact的产生原因，以及各个部分各自的noise。本文认为噪声分布是spatially random distribution</li>
+<li>smoothness constraint</li>
+<li>optimization algorithm</li>
+</ul>
+<h1 id="二、Analysis"><a href="#二、Analysis" class="headerlink" title="二、Analysis"></a>二、Analysis</h1><h4 id="1-理想情况下产生实际的blurred-image"><a href="#1-理想情况下产生实际的blurred-image" class="headerlink" title="1.理想情况下产生实际的blurred image"></a>1.理想情况下产生实际的blurred image</h4><p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/1.png" alt="1"></p>
+<p>I是latent image, f是psf或blur kernel。二者做卷积加上图像噪声生成一幅blurred image</p>
+<p>恢复图像的难点在于ringing artifacts，以前的研究认为这源于Gibbs phenomeno,即傅里叶级数在自然图像不连续阶跃处的误差造成，但作者的研究发现ringing artifacts更可能源于对图像噪声与psf估计中产生的误差的混淆</p>
+<p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/2.png" alt="2"></p>
+<p>如果不能对噪声n合理建模，会容易把在优化过程中产生的对Iatent image和blur kernel的误差归到noise中。而以前对noise往往认为其和其一阶导服从均值为0的高斯分布，这是一个很弱的约束。</p>
+<h1 id="三、Model"><a href="#三、Model" class="headerlink" title="三、Model"></a>三、Model</h1><h4 id="1-概率模型"><a href="#1-概率模型" class="headerlink" title="1.概率模型"></a>1.概率模型</h4><p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/3.png" alt="3"></p>
+<p>右边分别是似然概率**p(I|L,f)**还有概率先验</p>
+<h4 id="2-似然概率"><a href="#2-似然概率" class="headerlink" title="2.似然概率"></a>2.似然概率</h4><p>在已知latent image和psf的条件下估计拍摄到的图片，根据第一个表达式，也相当于在估计噪声。噪声在x于y轴上的偏导用差分替代。高阶微分同理</p>
+<p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/4.png" alt="4"></p>
+<p>认为噪声、噪声的一阶导数、二阶导数符合高斯分布</p>
+<h4 id="3-kernel先验"><a href="#3-kernel先验" class="headerlink" title="3.kernel先验"></a>3.kernel先验</h4><p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/5.png" alt="5"></p>
+<h4 id="4-image先验"><a href="#4-image先验" class="headerlink" title="4.image先验"></a>4.image先验</h4><p>由两部分组成，Global prior和Local prior</p>
+<p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/6.png" alt="6"></p>
+<h5 id="4-1-Global-prior"><a href="#4-1-Global-prior" class="headerlink" title="4.1 Global prior"></a>4.1 Global prior</h5><p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/7.png" alt="7"></p>
+<p>研究图像的自然梯度并进行拟合</p>
+<p>拟合函数：</p>
+<p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/8.png" alt="8"></p>
+<h5 id="4-2-Local-prior"><a href="#4-2-Local-prior" class="headerlink" title="4.2 Local prior"></a>4.2 Local prior</h5><p>为了消除ringing artifacts而引入，基本思想：运动模糊可以被视为平滑滤波过程(smooth filtering process)，在模糊图像局部，像素应该具有constant color</p>
+<p>对于blurred image中的每个像素，生成一个和blur kernel相同大小的local window，计算window内颜色的标准差，如果小于某个阈值则认为该像素在区域内</p>
+<p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/9.png" alt="9"></p>
+<p>sigma1是标准差</p>
+<h1 id="四、Optimization"><a href="#四、Optimization" class="headerlink" title="四、Optimization"></a>四、Optimization</h1><h4 id="1-定义能量函数为似然概率的负对数"><a href="#1-定义能量函数为似然概率的负对数" class="headerlink" title="1.定义能量函数为似然概率的负对数"></a>1.定义能量函数为似然概率的负对数</h4><p><img src="/2022/04/04/CG%E8%AF%BE%E7%A8%8B%E8%AE%BA%E6%96%87-High-quality-Motion-Deblurring-from-a-Single-Image/10.png" alt="10"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/03/Dter3D%E8%AE%BA%E6%96%87%E9%87%8D%E6%96%B0%E9%98%85%E8%AF%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/04/03/Dter3D%E8%AE%BA%E6%96%87%E9%87%8D%E6%96%B0%E9%98%85%E8%AF%BB/" class="post-title-link" itemprop="url">Dter3D论文重新阅读</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-04-03 18:13:26 / 修改时间：19:55:02" itemprop="dateCreated datePublished" datetime="2022-04-03T18:13:26+08:00">2022-04-03</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/31/%E5%85%B3%E4%BA%8Etransformer%E7%9A%84%E7%96%91%E9%97%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/31/%E5%85%B3%E4%BA%8Etransformer%E7%9A%84%E7%96%91%E9%97%AE/" class="post-title-link" itemprop="url">关于transformer的疑问</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-31 19:58:15 / 修改时间：20:20:44" itemprop="dateCreated datePublished" datetime="2022-03-31T19:58:15+08:00">2022-03-31</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="3月31日"><a href="#3月31日" class="headerlink" title="3月31日"></a>3月31日</h1><p>主要的疑问在于为什么transformer收敛较慢？</p>
+<p>transformer的计算流图怎么反向更新参数的？</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/24/%E5%85%B6%E4%BB%96%E7%A0%94%E7%A9%B6%E8%80%85%E5%AF%B9%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E7%9A%84%E7%A0%94%E7%A9%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/24/%E5%85%B6%E4%BB%96%E7%A0%94%E7%A9%B6%E8%80%85%E5%AF%B9%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E7%9A%84%E7%A0%94%E7%A9%B6/" class="post-title-link" itemprop="url">其他研究者对自动驾驶的研究</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-24 16:33:40 / 修改时间：20:52:34" itemprop="dateCreated datePublished" datetime="2022-03-24T16:33:40+08:00">2022-03-24</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一、视觉为中心的自动驾驶–BEV感知"><a href="#一、视觉为中心的自动驾驶–BEV感知" class="headerlink" title="一、视觉为中心的自动驾驶–BEV感知"></a>一、视觉为中心的自动驾驶–BEV感知</h1><p>HDMapNet</p>
+<p><img src="/2022/03/24/%E5%85%B6%E4%BB%96%E7%A0%94%E7%A9%B6%E8%80%85%E5%AF%B9%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E7%9A%84%E7%A0%94%E7%A9%B6/0.png" alt="0"></p>
+<p><img src="/2022/03/24/%E5%85%B6%E4%BB%96%E7%A0%94%E7%A9%B6%E8%80%85%E5%AF%B9%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E7%9A%84%E7%A0%94%E7%A9%B6/1.png" alt="1"></p>
+<p><img src="/2022/03/24/%E5%85%B6%E4%BB%96%E7%A0%94%E7%A9%B6%E8%80%85%E5%AF%B9%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E7%9A%84%E7%A0%94%E7%A9%B6/2.png" alt="2"></p>
+<p><img src="/2022/03/24/%E5%85%B6%E4%BB%96%E7%A0%94%E7%A9%B6%E8%80%85%E5%AF%B9%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E7%9A%84%E7%A0%94%E7%A9%B6/3.png" alt="3"></p>
+<h1 id="二、特斯拉"><a href="#二、特斯拉" class="headerlink" title="二、特斯拉"></a>二、特斯拉</h1>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/05/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="chen cong">
+      <meta itemprop="description" content="personal blog of cc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starC">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/05/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">编译原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-05 08:51:05 / 修改时间：12:15:52" itemprop="dateCreated datePublished" datetime="2022-03-05T08:51:05+08:00">2022-03-05</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Chapter-2-词法分析"><a href="#Chapter-2-词法分析" class="headerlink" title="Chapter 2 词法分析"></a>Chapter 2 词法分析</h1><h3 id="0-概述"><a href="#0-概述" class="headerlink" title="0.概述"></a>0.概述</h3><p>词法分析(lecical analysis)的作用：将原程序读作字符文件并将其分为若干个记号，记号是一个字符序列。三类字符：关键字(key word),标识符(identifier),</p>
+<p>步骤：</p>
+<ul>
+<li>给出扫描程序的概貌</li>
+<li>正则表达式与自动机</li>
+<li>TINY描述程序的完整实现</li>
+<li>扫描器生成器的过程和方法，并用Lex再次实现TINY的扫描程序</li>
+</ul>
+<h3 id="1-扫描处理"><a href="#1-扫描处理" class="headerlink" title="1.扫描处理"></a>1.扫描处理</h3><p>从源代码中读取字符并形成由编译器的以后部分（通常是分析程序）处理的逻辑单元。</p>
+<p>记号：名称、属性。撒尿程序必须计算每个计算的属性并将所有属性收集到一个单独构造的数据类型中，成为token record.</p>
+<h3 id="2-正则表达式"><a href="#2-正则表达式" class="headerlink" title="2.正则表达式"></a>2.正则表达式</h3><p>在正则表达式中有3种基本运算：① 从各选择对象中选择，用元字符|（竖线）表示。②连结，由并置表示（不用元字符）。③重复或“闭包”，由元字符*****表示。</p>
+<p>在这 3个运算中， *****优先权最高，连结其次，| 最末</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -570,452 +914,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/25/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-attention-is-all-you-need/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="chen cong">
-      <meta itemprop="description" content="personal blog of cc">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starC">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/25/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-attention-is-all-you-need/" class="post-title-link" itemprop="url">论文学习-attention is all you need</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-02-25 13:44:41 / 修改时间：15:24:29" itemprop="dateCreated datePublished" datetime="2022-02-25T13:44:41+08:00">2022-02-25</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/24/%E6%8A%95%E8%B5%84%E5%AD%A6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="chen cong">
-      <meta itemprop="description" content="personal blog of cc">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starC">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/24/%E6%8A%95%E8%B5%84%E5%AD%A6/" class="post-title-link" itemprop="url">投资学</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-02-24 13:25:37" itemprop="dateCreated datePublished" datetime="2022-02-24T13:25:37+08:00">2022-02-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-03-03 13:53:44" itemprop="dateModified" datetime="2022-03-03T13:53:44+08:00">2022-03-03</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="2月24日"><a href="#2月24日" class="headerlink" title="2月24日"></a>2月24日</h1><h3 id="1-投资的定义"><a href="#1-投资的定义" class="headerlink" title="1.投资的定义"></a>1.投资的定义</h3><p>当前投入资金或资源以期望在未来获得收益的行为</p>
-<h3 id="2-实物资产与金融资产"><a href="#2-实物资产与金融资产" class="headerlink" title="2.实物资产与金融资产"></a>2.实物资产与金融资产</h3><p>实物资产</p>
-<ul>
-<li>一个社会的物质财富取决于该社会经济的生产能力，为经济创造净利润</li>
-<li>如土地、建筑物、机器以及可用于生产产品和提供服务的知识</li>
-</ul>
-<p>金融资产</p>
-<ul>
-<li>对实物资产的索取权</li>
-</ul>
-<p>租赁合同属于金融资产</p>
-<p>实物资产：客户友好、大学教育、商业信誉</p>
-<h3 id="3-金融资产分类"><a href="#3-金融资产分类" class="headerlink" title="3.金融资产分类"></a>3.金融资产分类</h3><p>固定收益型证券</p>
-<p>金融市场与经济</p>
-<p>造假的原因：</p>
-<ul>
-<li>和股东交待</li>
-<li>面临退市的危险</li>
-<li>吸引投资者，吸引资本的流入</li>
-</ul>
-<p>金融市场作用</p>
-<ul>
-<li>信息作用</li>
-<li>资金的空间转移</li>
-<li>资金的时间转移，例如未来的钱现在花费(比如房贷)，又比如当前的钱存到未来</li>
-<li>风险分配;保险公司，购买保险也是一种风险转移；投资者可以选择满足自身特定风险偏好的证券</li>
-<li>所有权和经营权的分离：获得稳定性的同时也引发了代理问题</li>
-</ul>
-<h3 id="5-市场是竞争的"><a href="#5-市场是竞争的" class="headerlink" title="5.市场是竞争的"></a>5.市场是竞争的</h3><p>需要权衡风险与收益</p>
-<p>有效市场假说：</p>
-<p>​        产的现有市场价格能够充分反映所有有关、可用信息的资本市场。通过交易来调节价格，所以市场价格的核心是交易与流动性</p>
-<p>​        同时与市场管理相关</p>
-<p>​        积极型管理:</p>
-<ul>
-<li>发现误定价的证券</li>
-<li>把握投资时机</li>
-</ul>
-<p>​        消极型管理:</p>
-<ul>
-<li>无需花费精力去发现被低估的证券</li>
-<li>无需把握证券时机</li>
-<li>持有高度多样化的投资</li>
-</ul>
-<h3 id="4-投资过程"><a href="#4-投资过程" class="headerlink" title="4.投资过程"></a>4.投资过程</h3><p>两类决策：</p>
-<ul>
-<li>资产配置决策</li>
-<li>证券选择决策</li>
-</ul>
-<p>Tips:</p>
-<p>货币市场与资本市场的区别：</p>
-<p>货币市场和资本市场的功能不同，所交易的证券期限、利率和风险也不同。资本市场是长期资金的融通市场，货币市场是短期资金融通市场。货币市场交易的证券期限不超过1年。资本市场是指期限在1年以上的金融资产交易市场。货币市场的主要功能是保持金融资产的流动性，以便随时转换为现金。资本市场的主要功能是进行长期资金的融通。货币市场工具包括短期国债（在英美称为国库券）、可转让存单、商业票据、银行承兑汇票等。资本市场的工具包括<a target="_blank" rel="noopener" href="https://www.dongao.com/wdzt/zjzcgl_gupiao/">股票</a>、公司债券、长期政府债券和银行长期贷款等。资本市场包括银行中长期存贷市场和有价证券市场。与货币市场相比，资本市场交易的证券期限长（超过1年），利率或必要报酬率较高，其风险也较大，具有长期较稳定收入，类似于资本投入。</p>
-<h1 id="3月3日"><a href="#3月3日" class="headerlink" title="3月3日"></a>3月3日</h1>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="chen cong">
-      <meta itemprop="description" content="personal blog of cc">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starC">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/" class="post-title-link" itemprop="url">论文学习-FCOS</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-02-23 09:59:54" itemprop="dateCreated datePublished" datetime="2022-02-23T09:59:54+08:00">2022-02-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-02-24 20:29:55" itemprop="dateModified" datetime="2022-02-24T20:29:55+08:00">2022-02-24</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="一、前人的工作与问题"><a href="#一、前人的工作与问题" class="headerlink" title="一、前人的工作与问题"></a>一、前人的工作与问题</h1><p>​        目标检测需要一组预定义好的anchor box，存在一些缺点</p>
-<ul>
-<li>对物体大小以及长宽比的变化比较敏感(确实，对于同一个物体，根据相机距离远近的不同，成像大小也不同，需要不同的框去包围；同时对于形态的变化也需要进行相应调整;anchor box的大小应该是能自适应调整的;什么特征会与anchor box大小相关？)</li>
-<li>anchor-based detector需要密集地将anchor box放置在图像上，而绝大多数都是负样本，一方面计算量太大，另一方面正负样本的比例失衡，不利于模型的训练</li>
-</ul>
-<p>希望设计FCN的框架去生成anchor-free的detector</p>
-<h1 id="二、做法"><a href="#二、做法" class="headerlink" title="二、做法"></a>二、做法</h1><p>per-pixel prediction + multi-level prediction+’center-ness’branch</p>
-<h3 id="1-Fully-Concolutional-One-Stage-Object-Detecor"><a href="#1-Fully-Concolutional-One-Stage-Object-Detecor" class="headerlink" title="1.Fully Concolutional One-Stage Object Detecor"></a>1.Fully Concolutional One-Stage Object Detecor</h3><p><strong>训练数据</strong>:输入image的anchor box由五元向量构成：四个anchor坐标+一个class坐标。将每个位置的pixel的信息作为training samples。对于处于(x,y)的像素，如果它落于任何ground-truth anchor box中且类别正是anchor box所框中物体的类别，则认为它是正样本；否则是负样本，类别为0(用于描述背景的类别)；而如果落在多个box中则认为是一个ambiguous sample.</p>
-<p><strong>regression target</strong>:对于每个位置的像素，预测四元距离向量，即与bounding box四条边的距离</p>
-<p><strong>network outputs</strong>:同regression target再,加上一个class vector。class vector是一个C维向量，利用的是C个二元分类器而不是一个多级分类器。</p>
-<p><strong>优势</strong>：在训练过程中可以充分利用foreground samples.</p>
-<p><strong>网络架构与Loss function</strong>:</p>
-<p><img src="/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/3.png" alt="3"></p>
-<p><img src="/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/2.png" alt="2"></p>
-<h3 id="2-Multi-level-Prediction-with-FPN"><a href="#2-Multi-level-Prediction-with-FPN" class="headerlink" title="2.Multi-level Prediction with FPN"></a>2.Multi-level Prediction with FPN</h3><p><strong>两个可能存在的问题</strong>：</p>
-<ul>
-<li>用CNN处理具有大步长的feature map可能带来较低的BPR</li>
-<li>ground-truth box的重叠可能会模棱两可，该位置的像素对应哪个box呢？</li>
-</ul>
-<p><strong>做法：</strong>首先获取不同大小的feature maps{P<sub>3</sub>,P<sub>4</sub>,P<sub>5</sub>,P<sub>6</sub>,P<sub>7</sub>},在这些feature maps上做detect得到很多regression targets,对这些detect targets限制大小。最终如果一个位置的像素仍与多个box匹配，则选择面积最小的box作为结果输出。</p>
-<p><strong>细节：</strong>heads模块在不同feature levels中共享，优点是detector更高效且提升性能；但是由于不同feature levels得到的box的大小具有不同的范围，所以不太合理，解决方法是使用自适应的指数函数exp(s<sub>i</sub>x)来调整feature level P<sub>i</sub>.</p>
-<h3 id="3-Center-ness-for-FCOS"><a href="#3-Center-ness-for-FCOS" class="headerlink" title="3.Center-ness for FCOS"></a>3.Center-ness for FCOS</h3><p>**问题:**大量低质量的bounding box被远离物体的中心的点产生</p>
-<p><strong>做法：</strong>增加了一个single branch来预测一个点的”center-ness”,”center-ness”描述了从该点到该点属于的物体中心的归一化距离。center-ness 在0到1之间且用BCE训练，该loss在loss function中体现。在测试过程中，class由初始预测class与center-ness相乘得到，从而可能远离物体中心的属于物体的点在NMS步骤中被滤除。</p>
-<p><img src="/2022/02/23/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0-FCOS/4.png" alt="4"></p>
-<h1 id="三、思考"><a href="#三、思考" class="headerlink" title="三、思考"></a>三、思考</h1><p>1.anchor-box free的想法很厉害，将image-level的问题用pixel-level解决，对每个位置上的像素进行预测bounding box与class；后续的设计都从而展开；多级预测的思想也很厉害，在降采样的图像金字塔上分别做预测，能解决ambiguous sample的问题，也能增加预测结果的鲁棒性。</p>
-<p>2.我的一些想法</p>
-<p>关于bounding box:</p>
-<p>是否需要绘制bounding box?bounding box依赖于该物体像素的分布，如果能准确预测每点像素的值，是否Bounding box也可以从这些像素的位置中推导得到(取到上下、左右边界即可)，也即图像语义分割+类别标注+bounding box绘制能否达到同样效果？这样也能直接解决multi bounding box的问题。但是感觉对单点做分类好难。</p>
-<p>能不能再加一个post-process:根据一个限制条件：同一物体的点的regression targets在邻域内应当是连续的，不能出现大的跳变来提高bounding box的准确性。或者在loss function中体现？</p>
-<p>关于点：</p>
-<p>单独的点是没有任何意义的，只有将点放在上下文中它才能构成物体或者背景，但在从实物到图像的采样过程中，点的像素值具有噪声也受光照等因素影响。CNN的卷积操作、池化操作都能起扩大感受野的作用，将孤立的点与邻域的点联系起来并提取特征，从关联性的角度看，self-attention能否起到类似的作用？不需要对整张图片做self-attention,能不能用local self-attention代替卷积？或者用self-attention与CNN相结合？</p>
-<p>以及局部特征的提取？卷积运算简单且高效，但是固定窗口是否略显僵硬？虽然可以用不同大小的卷积进行操作。而且特征的体现还是以像素值进行表征，是否过于简单？</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/23/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="chen cong">
-      <meta itemprop="description" content="personal blog of cc">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starC">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/23/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" class="post-title-link" itemprop="url">数学建模</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-02-23 09:50:34" itemprop="dateCreated datePublished" datetime="2022-02-23T09:50:34+08:00">2022-02-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-03-02 11:20:37" itemprop="dateModified" datetime="2022-03-02T11:20:37+08:00">2022-03-02</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="1-Google搜索引擎"><a href="#1-Google搜索引擎" class="headerlink" title="1.Google搜索引擎"></a>1.Google搜索引擎</h3><p>随机矩阵</p>
-<p>漏洞：</p>
-<ul>
-<li>悬挂网页破坏随机矩阵的形式；</li>
-<li>有多个属于特征值1的线性无关的特征向量</li>
-</ul>
-<p>不可约矩阵与强联通矩阵</p>
-<p>幂法与Markov链</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/21/Self-attention/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="chen cong">
-      <meta itemprop="description" content="personal blog of cc">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starC">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/21/Self-attention/" class="post-title-link" itemprop="url">Self-attention</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-02-21 10:06:16 / 修改时间：11:14:23" itemprop="dateCreated datePublished" datetime="2022-02-21T10:06:16+08:00">2022-02-21</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="一、Vector-Set-as-Input"><a href="#一、Vector-Set-as-Input" class="headerlink" title="一、Vector Set as Input"></a>一、Vector Set as Input</h1><p>​        与以前遇到的问题不同，输入的是一个向量的集合。向量的数目不确定。</p>
-<p>​        典型应用：NLP中语句作为输入，每个单词是一个vector，可以用one-hot编码编成向量，也可以用word-embedding包含语义信息；语音输入，以frame为单位，一定步长移动；Social-network，可以将每个节点作为一个vector；高分子结构，同样可以视为一种graph。</p>
-<h1 id="二、The-output"><a href="#二、The-output" class="headerlink" title="二、The output"></a>二、The output</h1><p>1.each vector has a label</p>
-<p>例子：</p>
-<ul>
-<li>词性标注 I saw a saw.  –&gt;&gt; N V DET N</li>
-<li>social networrk每个节点的特性</li>
-</ul>
-<p>2.the whole sequence has a label</p>
-<p>例子:</p>
-<ul>
-<li>sentiment analysis</li>
-<li>预测高分子的性质</li>
-</ul>
-<p>3.Model decides the number of labels tself</p>
-<p>例子:</p>
-<ul>
-<li>翻译</li>
-<li>语音辨识</li>
-</ul>
-<h1 id="三、Type-one"><a href="#三、Type-one" class="headerlink" title="三、Type one"></a>三、Type one</h1><p>sequence label问题</p>
-<p>1.self-attention作为解决方法</p>
-<p><img src="/2022/02/21/Self-attention/1.png" alt="1"></p>
-<p>不是考虑一个frame或windows，而是考虑整个sequence作为输入</p>
-<p>同时self-attention可以多次使用且可以与fully-conntected network交替使用</p>
-<p><img src="/2022/02/21/Self-attention/2.png" alt="2"></p>
-<p>2.self-attention做法</p>
-<p>计算一对vector之间的关联程度</p>
-<p><img src="/2022/02/21/Self-attention/3.png" alt="3"></p>
-<p>计算sequence中vector的关联程度</p>
-<p><img src="/2022/02/21/Self-attention/4.png" alt="4"></p>
-<p>最终输出一个vector</p>
-<p><img src="/2022/02/21/Self-attention/5.png" alt="5"></p>
-<p>简化运算形式：</p>
-<p><img src="/2022/02/21/Self-attention/6.png" alt="6"></p>
-<p><img src="/2022/02/21/Self-attention/7.png" alt="7"></p>
-<p><img src="/2022/02/21/Self-attention/8.png" alt="8"></p>
-<p>3.multi-head attention</p>
-<p>发掘不同的self-attention</p>
-<p><img src="/2022/02/21/Self-attention/9.png" alt="9"></p>
-<p>4.Positional Encoding</p>
-<p>上述计算中并没有考虑位置信息，计算过程对称。</p>
-<p>但如果认为位置信息比较重要则可以加进去，做法可以对每一个位置生成一个unique vector，与原来的输入相加即可。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1086,14 +988,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
